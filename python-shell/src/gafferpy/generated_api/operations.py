@@ -202,24 +202,24 @@ class AddGraph(Operation):
             schema=None,
             write_access_predicate=None,
             store_properties=None,
-            disabled_by_default=None,
             parent_properties_id=None,
             read_access_predicate=None,
             graph_auths=None,
             is_public=None,
             parent_schema_ids=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
         self.store_properties = store_properties
-        self.disabled_by_default = disabled_by_default
         self.parent_properties_id = parent_properties_id
         self.read_access_predicate = read_access_predicate
         self.graph_auths = graph_auths
         self.is_public = is_public
         self.parent_schema_ids = parent_schema_ids
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
@@ -229,8 +229,6 @@ class AddGraph(Operation):
             operation_json["writeAccessPredicate"] = self.write_access_predicate
         if self.store_properties is not None:
             operation_json["storeProperties"] = self.store_properties
-        if self.disabled_by_default is not None:
-            operation_json["disabledByDefault"] = self.disabled_by_default
         if self.parent_properties_id is not None:
             operation_json["parentPropertiesId"] = self.parent_properties_id
         if self.read_access_predicate is not None:
@@ -243,6 +241,8 @@ class AddGraph(Operation):
             operation_json["parentSchemaIds"] = self.parent_schema_ids
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
@@ -257,7 +257,6 @@ class AddGraphWithHooks(Operation):
             schema=None,
             write_access_predicate=None,
             store_properties=None,
-            disabled_by_default=None,
             parent_properties_id=None,
             read_access_predicate=None,
             graph_auths=None,
@@ -265,12 +264,12 @@ class AddGraphWithHooks(Operation):
             parent_schema_ids=None,
             graph_id=None,
             hooks=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
         self.store_properties = store_properties
-        self.disabled_by_default = disabled_by_default
         self.parent_properties_id = parent_properties_id
         self.read_access_predicate = read_access_predicate
         self.graph_auths = graph_auths
@@ -278,6 +277,7 @@ class AddGraphWithHooks(Operation):
         self.parent_schema_ids = parent_schema_ids
         self.graph_id = graph_id
         self.hooks = hooks
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
@@ -287,8 +287,6 @@ class AddGraphWithHooks(Operation):
             operation_json["writeAccessPredicate"] = self.write_access_predicate
         if self.store_properties is not None:
             operation_json["storeProperties"] = self.store_properties
-        if self.disabled_by_default is not None:
-            operation_json["disabledByDefault"] = self.disabled_by_default
         if self.parent_properties_id is not None:
             operation_json["parentPropertiesId"] = self.parent_properties_id
         if self.read_access_predicate is not None:
@@ -303,6 +301,8 @@ class AddGraphWithHooks(Operation):
             operation_json["graphId"] = self.graph_id
         if self.hooks is not None:
             operation_json["hooks"] = self.hooks
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
@@ -315,22 +315,20 @@ class ChangeGraphAccess(Operation):
     def __init__(
             self,
             graph_id,
-            disabled_by_default=None,
             owner_user_id=None,
             graph_auths=None,
             is_public=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        self.disabled_by_default = disabled_by_default
         self.owner_user_id = owner_user_id
         self.graph_auths = graph_auths
         self.is_public = is_public
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
-        if self.disabled_by_default is not None:
-            operation_json["disabledByDefault"] = self.disabled_by_default
         if self.owner_user_id is not None:
             operation_json["ownerUserId"] = self.owner_user_id
         if self.graph_auths is not None:
@@ -339,6 +337,8 @@ class ChangeGraphAccess(Operation):
             operation_json["isPublic"] = self.is_public
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
@@ -352,10 +352,12 @@ class ChangeGraphId(Operation):
             self,
             graph_id,
             new_graph_id=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.new_graph_id = new_graph_id
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
@@ -363,34 +365,48 @@ class ChangeGraphId(Operation):
             operation_json["newGraphId"] = self.new_graph_id
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
-class FederatedOperationChain(Operation):
+class FederatedOperation(Operation):
     """
-    A wrapped OperationChain to be executed in one go on a delegate graph
+    Federates a payload operation across given graphs and merges the results with a given function.
     """
-    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperationChain"
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.FederatedOperation"
 
     def __init__(
             self,
-            operation_chain,
+            skip_failed_federated_execution=None,
             input=None,
-            multi_input_wrapper=None,
+            graph_ids=None,
+            operation=None,
+            merge_function=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.skip_failed_federated_execution = skip_failed_federated_execution
         self.input = input
-        self.multi_input_wrapper = multi_input_wrapper
-        self.operation_chain = operation_chain
+        self.graph_ids = graph_ids
+        self.operation = operation
+        self.merge_function = merge_function
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
+        if self.skip_failed_federated_execution is not None:
+            operation_json["skipFailedFederatedExecution"] = self.skip_failed_federated_execution
         if self.input is not None:
             operation_json["input"] = self.input
-        if self.multi_input_wrapper is not None:
-            operation_json["multiInputWrapper"] = self.multi_input_wrapper
-        if self.operation_chain is not None:
-            operation_json["operationChain"] = self.operation_chain
+        if self.graph_ids is not None:
+            operation_json["graphIds"] = self.graph_ids
+        if self.operation is not None:
+            operation_json["operation"] = self.operation
+        if self.merge_function is not None:
+            operation_json["mergeFunction"] = self.merge_function
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
@@ -402,26 +418,40 @@ class GetAllGraphIds(Operation):
 
     def __init__(
             self,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
-        return super().to_json()
+        operation_json = super().to_json()
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
+        return operation_json
 
 
 class GetAllGraphInfo(Operation):
     """
-    Gets the ids of all available Graphs from a federated store
+    Gets graph info of selected Graphs from the FederatedStore
     """
     CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.GetAllGraphInfo"
 
     def __init__(
             self,
+            graph_ids=None,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_ids = graph_ids
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
-        return super().to_json()
+        operation_json = super().to_json()
+        if self.graph_ids is not None:
+            operation_json["graphIds"] = self.graph_ids
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
+        return operation_json
 
 
 class RemoveGraph(Operation):
@@ -433,14 +463,42 @@ class RemoveGraph(Operation):
     def __init__(
             self,
             graph_id,
+            user_requesting_admin_usage=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
+        return operation_json
+
+
+class RemoveGraphAndDeleteAllData(Operation):
+    """
+    Used to tell a graph to delete all data, before being removed.
+    """
+    CLASS = "uk.gov.gchq.gaffer.federatedstore.operation.RemoveGraphAndDeleteAllData"
+
+    def __init__(
+            self,
+            graph_id=None,
+            user_requesting_admin_usage=None,
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.graph_id = graph_id
+        self.user_requesting_admin_usage = user_requesting_admin_usage
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.graph_id is not None:
+            operation_json["graphId"] = self.graph_id
+        if self.user_requesting_admin_usage is not None:
+            operation_json["userRequestingAdminUsage"] = self.user_requesting_admin_usage
         return operation_json
 
 
@@ -1594,33 +1652,35 @@ class AddElementsFromSocket(Operation):
         return operation_json
 
 
-class ImportCsv(Operation):
+class CsvToElements(Operation):
     """
     Adds elements from a openCypher CSV file
     """
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.add.ImportCsv"
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.add.CsvToElements"
 
     def __init__(
             self,
-            filename,
+            input=None,
             trim=None,
             delimiter=None,
             null_string=None,
             skip_invalid_elements=None,
+            csv_format=None,
             validate=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
-        self.filename = filename
+        self.input = input
         self.trim = trim
         self.delimiter = delimiter
         self.null_string = null_string
         self.skip_invalid_elements = skip_invalid_elements
+        self.csv_format = csv_format
         self.validate = validate
 
     def to_json(self):
         operation_json = super().to_json()
-        if self.filename is not None:
-            operation_json["filename"] = self.filename
+        if self.input is not None:
+            operation_json["input"] = self.input
         if self.trim is not None:
             operation_json["trim"] = self.trim
         if self.delimiter is not None:
@@ -1629,6 +1689,8 @@ class ImportCsv(Operation):
             operation_json["nullString"] = self.null_string
         if self.skip_invalid_elements is not None:
             operation_json["skipInvalidElements"] = self.skip_invalid_elements
+        if self.csv_format is not None:
+            operation_json["csvFormat"] = self.csv_format
         if self.validate is not None:
             operation_json["validate"] = self.validate
         return operation_json
@@ -1755,6 +1817,34 @@ class ExportToLocalFile(Operation):
         operation_json = super().to_json()
         if self.input is not None:
             operation_json["input"] = self.input
+        if self.file_path is not None:
+            operation_json["filePath"] = self.file_path
+        if self.key is not None:
+            operation_json["key"] = self.key
+        return operation_json
+
+
+class ImportFromLocalFile(Operation):
+    """
+    Fetches data from a local file
+    """
+    CLASS = "uk.gov.gchq.gaffer.operation.impl.export.localfile.ImportFromLocalFile"
+
+    def __init__(
+            self,
+            file_path,
+            job_id=None,
+            key=None,
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.job_id = job_id
+        self.file_path = file_path
+        self.key = key
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.job_id is not None:
+            operation_json["jobId"] = self.job_id
         if self.file_path is not None:
             operation_json["filePath"] = self.file_path
         if self.key is not None:
@@ -2281,14 +2371,16 @@ class ToCsv(Operation):
 
     def __init__(
             self,
-            element_generator,
             input=None,
+            element_generator=None,
             include_header=None,
+            csv_format=None,
             options=None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.element_generator = element_generator
         self.include_header = include_header
+        self.csv_format = csv_format
 
     def to_json(self):
         operation_json = super().to_json()
@@ -2298,6 +2390,8 @@ class ToCsv(Operation):
             operation_json["elementGenerator"] = self.element_generator
         if self.include_header is not None:
             operation_json["includeHeader"] = self.include_header
+        if self.csv_format is not None:
+            operation_json["csvFormat"] = self.csv_format
         return operation_json
 
 
@@ -2497,6 +2591,21 @@ class GetProxyUrl(Operation):
     Gets the Proxy URL value from the store properties
     """
     CLASS = "uk.gov.gchq.gaffer.proxystore.operation.GetProxyUrl"
+
+    def __init__(
+            self,
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+    def to_json(self):
+        return super().to_json()
+
+
+class DeleteAllData(Operation):
+    """
+    This operation is used to self delete all retained data
+    """
+    CLASS = "uk.gov.gchq.gaffer.store.operation.DeleteAllData"
 
     def __init__(
             self,
