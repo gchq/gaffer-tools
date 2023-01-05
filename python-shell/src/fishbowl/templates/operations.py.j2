@@ -1,6 +1,11 @@
 {% extends 'base.py.j2' %}
 
 {% block content %}
+import typing
+
+import gafferpy.gaffer_core
+import gafferpy.gaffer_functions
+import gafferpy.gaffer_operations
 from gafferpy.gaffer_operations import Operation
 {% for op in operations %}
 {%- if op.name != "uk.gov.gchq.gaffer.operation.OperationChainDAO" %}
@@ -25,10 +30,10 @@ class {{ short_name(op.name) }}(Operation):
             self,
             {%- for field in op.fields|sort(reverse=true, attribute="required") %}
             {%- if field.name != "options" %}
-            {{ snake_case(field.name) }}{% if not field.required %}=None{% endif %},
+            {{ snake_case(field.name) }}: {{ parse_java_type(field.className) }}{% if not field.required %} = None{% endif %},
             {%- endif %}
             {%- endfor %}
-            options=None):
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         {%- for field in op.fields %}
         {%- if field.name != "options" %}

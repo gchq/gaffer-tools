@@ -19,6 +19,7 @@ import re
 import shutil
 from jinja2 import Environment, FileSystemLoader
 from gafferpy.gaffer_core import JsonConverter
+from gafferpy.gaffer_types import parse_java_type_to_string
 
 
 class Fishbowl:
@@ -52,7 +53,8 @@ class Fishbowl:
             "get_fields": lambda f: self._gaffer_connector.get(
                 f"/graph/config/serialisedFields/{f}", json_result=True),
             "config_name": self._get_config_name,
-            "get_config_parameter": lambda n: re.sub(r".*\{", "", re.sub(r"\}.*", "", n))
+            "get_config_parameter": lambda n: re.sub(r".*\{", "", re.sub(r"\}.*", "", n)),
+            "parse_java_type": parse_java_type_to_string
         }
 
     def _generate_library(self):

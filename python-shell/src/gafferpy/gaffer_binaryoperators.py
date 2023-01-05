@@ -129,6 +129,7 @@ def load_binaryoperator_json_map():
         if hasattr(class_obj, 'CLASS'):
             JsonConverter.GENERIC_JSON_CONVERTERS[class_obj.CLASS] = \
                 lambda obj, class_obj=class_obj: class_obj(**obj)
+            JsonConverter.CLASS_MAP[class_obj.CLASS] = class_obj
     JsonConverter.CUSTOM_JSON_CONVERTERS[
         BinaryOperatorContext.CLASS] = binary_operator_context_converter
     JsonConverter.CUSTOM_JSON_CONVERTERS[

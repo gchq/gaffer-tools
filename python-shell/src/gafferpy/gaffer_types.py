@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2019 Crown Copyright
+# Copyright 2016-2022 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,70 @@
 This module contains Python copies of common Gaffer java types.
 """
 
+from typing import List, Dict, Any, Tuple, Set
+
+from gafferpy.gaffer_core import ElementSeed, EntitySeed, EdgeSeed, Element, JsonConverter
+from gafferpy.gaffer_operations import Operation
+
+def parse_java_type_to_string(java_type: str) -> str:
+    python_type = parse_java_type(java_type)
+    if isinstance(python_type, type):
+        if python_type.__module__ == "builtins":
+            return python_type.__name__
+        return f"{python_type.__module__}.{python_type.__name__}"
+    return str(python_type)
+
+def parse_java_type(java_type: str) -> type:
+    match java_type.split("["):
+        case array_type, "]":
+            return List[parse_java_type(array_type)]
+    match java_type.split("<"):
+        case "java.lang.Class", *_:
+            return Any
+        case "java.util.function.Function", *_:
+            return Any
+        case type1, "T>":
+            return parse_java_type(type1)
+        case type1, parameter:
+            parameter = parameter.strip(">")
+            return parse_java_type(type1)[parse_java_type(parameter)]
+    match java_type.split(","):
+        case type1, type2:
+            return parse_java_type(type1), parse_java_type(type2)
+    match java_type:
+        case "java.lang.String" | "char":
+            return str
+        case "java.lang.Integer" | "java.lang.Long" | "int":
+            return int
+        case "java.lang.Float":
+            return float
+        case "java.lang.Boolean":
+            return bool
+        case "T" | "Object" | "?" | "OBJ" | "java.lang.Object" | "I" | "I_ITEM" | "java.lang.Class" | "uk.gov.gchq.gaffer.access.predicate.AccessPredicate":
+            return Any
+        case "java.lang.Iterable" | "java.util.List":
+            return List
+        case "java.util.Set":
+            return Set
+        case "java.util.Map" | "java.util.LinkedHashMap" | "java.util.Properties" | "uk.gov.gchq.gaffer.store.schema.Schema":
+            return Dict
+        case "uk.gov.gchq.gaffer.commonutil.pair.Pair":
+            return Tuple
+        case "uk.gov.gchq.gaffer.data.element.id.ElementId":
+            return ElementSeed
+        case "uk.gov.gchq.gaffer.data.element.id.EntityId":
+            return EntitySeed
+        case "uk.gov.gchq.gaffer.data.element.id.EdgeId":
+            return EdgeSeed
+        case "uk.gov.gchq.gaffer.data.element.Element":
+            return Element
+        case "uk.gov.gchq.gaffer.operation.Operation":
+            return Operation
+
+    if java_type in JsonConverter.CLASS_MAP:
+        return JsonConverter.CLASS_MAP[java_type]
+
+    return Any
 
 def long(value):
     return {"java.lang.Long": value}

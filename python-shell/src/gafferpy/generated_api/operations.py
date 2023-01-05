@@ -19,6 +19,11 @@ This module has been generated with fishbowl.
 To make changes, either extend these classes or change fishbowl.
 """
 
+import typing
+
+import gafferpy.gaffer_core
+import gafferpy.gaffer_functions
+import gafferpy.gaffer_operations
 from gafferpy.gaffer_operations import Operation
 
 
@@ -37,9 +42,9 @@ class ImportAccumuloKeyValueFiles(Operation):
 
     def __init__(
             self,
-            input_path,
-            failure_path,
-            options=None):
+            input_path: str,
+            failure_path: str,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input_path = input_path
         self.failure_path = failure_path
@@ -59,7 +64,7 @@ class GetElementsBetweenSets(Operation):
 
     Args:
         input: 
-        view: Used to filter and transform results
+        view: 
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         input_b: 
         directed_type: Is the Edge directed?
@@ -72,13 +77,13 @@ class GetElementsBetweenSets(Operation):
 
     def __init__(
             self,
-            input=None,
-            view=None,
-            include_incoming_out_going=None,
-            input_b=None,
-            directed_type=None,
-            views=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            view: gafferpy.gaffer_operations.View = None,
+            include_incoming_out_going: str = None,
+            input_b: typing.List[typing.Any] = None,
+            directed_type: str = None,
+            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -110,7 +115,7 @@ class GetElementsInRanges(Operation):
 
     Args:
         input: 
-        view: Used to filter and transform results
+        view: 
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
         views: 
@@ -122,12 +127,12 @@ class GetElementsInRanges(Operation):
 
     def __init__(
             self,
-            input=None,
-            view=None,
-            include_incoming_out_going=None,
-            directed_type=None,
-            views=None,
-            options=None):
+            input: typing.List[typing.Tuple[gafferpy.gaffer_core.ElementSeed, gafferpy.gaffer_core.ElementSeed]] = None,
+            view: gafferpy.gaffer_operations.View = None,
+            include_incoming_out_going: str = None,
+            directed_type: str = None,
+            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -156,7 +161,7 @@ class GetElementsWithinSet(Operation):
 
     Args:
         input: 
-        view: Used to filter and transform results
+        view: 
         directed_type: Is the Edge directed?
         views: 
         options: Additional map of options
@@ -167,11 +172,11 @@ class GetElementsWithinSet(Operation):
 
     def __init__(
             self,
-            input=None,
-            view=None,
-            directed_type=None,
-            views=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            view: gafferpy.gaffer_operations.View = None,
+            directed_type: str = None,
+            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -197,7 +202,7 @@ class SummariseGroupOverRanges(Operation):
 
     Args:
         input: 
-        view: Used to filter and transform results
+        view: 
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
         views: 
@@ -209,12 +214,12 @@ class SummariseGroupOverRanges(Operation):
 
     def __init__(
             self,
-            input=None,
-            view=None,
-            include_incoming_out_going=None,
-            directed_type=None,
-            views=None,
-            options=None):
+            input: typing.List[typing.Tuple[gafferpy.gaffer_core.ElementSeed, gafferpy.gaffer_core.ElementSeed]] = None,
+            view: gafferpy.gaffer_operations.View = None,
+            include_incoming_out_going: str = None,
+            directed_type: str = None,
+            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -260,17 +265,17 @@ class AddGraph(Operation):
 
     def __init__(
             self,
-            graph_id,
-            schema=None,
-            write_access_predicate=None,
-            store_properties=None,
-            parent_properties_id=None,
-            read_access_predicate=None,
-            graph_auths=None,
-            is_public=None,
-            parent_schema_ids=None,
-            user_requesting_admin_usage=None,
-            options=None):
+            graph_id: str,
+            schema: typing.Dict = None,
+            write_access_predicate: typing.Any = None,
+            store_properties: typing.Dict = None,
+            parent_properties_id: str = None,
+            read_access_predicate: typing.Any = None,
+            graph_auths: typing.Set[str] = None,
+            is_public: bool = None,
+            parent_schema_ids: typing.List[str] = None,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
@@ -332,18 +337,18 @@ class AddGraphWithHooks(Operation):
 
     def __init__(
             self,
-            schema=None,
-            write_access_predicate=None,
-            store_properties=None,
-            parent_properties_id=None,
-            read_access_predicate=None,
-            graph_auths=None,
-            is_public=None,
-            parent_schema_ids=None,
-            graph_id=None,
-            hooks=None,
-            user_requesting_admin_usage=None,
-            options=None):
+            schema: typing.Dict = None,
+            write_access_predicate: typing.Any = None,
+            store_properties: typing.Dict = None,
+            parent_properties_id: str = None,
+            read_access_predicate: typing.Any = None,
+            graph_auths: typing.Set[str] = None,
+            is_public: bool = None,
+            parent_schema_ids: typing.List[str] = None,
+            graph_id: str = None,
+            hooks: typing.List[typing.Any] = None,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.write_access_predicate = write_access_predicate
@@ -402,12 +407,12 @@ class ChangeGraphAccess(Operation):
 
     def __init__(
             self,
-            graph_id,
-            owner_user_id=None,
-            graph_auths=None,
-            is_public=None,
-            user_requesting_admin_usage=None,
-            options=None):
+            graph_id: str,
+            owner_user_id: str = None,
+            graph_auths: typing.Set[str] = None,
+            is_public: bool = None,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.owner_user_id = owner_user_id
         self.graph_auths = graph_auths
@@ -446,10 +451,10 @@ class ChangeGraphId(Operation):
 
     def __init__(
             self,
-            graph_id,
-            new_graph_id=None,
-            user_requesting_admin_usage=None,
-            options=None):
+            graph_id: str,
+            new_graph_id: str = None,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.new_graph_id = new_graph_id
         self.graph_id = graph_id
@@ -485,13 +490,13 @@ class FederatedOperation(Operation):
 
     def __init__(
             self,
-            skip_failed_federated_execution=None,
-            input=None,
-            graph_ids=None,
-            operation=None,
-            merge_function=None,
-            user_requesting_admin_usage=None,
-            options=None):
+            skip_failed_federated_execution: typing.Any = None,
+            input: typing.Any = None,
+            graph_ids: typing.List[str] = None,
+            operation: gafferpy.gaffer_operations.Operation = None,
+            merge_function: typing.Any = None,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.skip_failed_federated_execution = skip_failed_federated_execution
         self.input = input
@@ -531,8 +536,8 @@ class GetAllGraphIds(Operation):
 
     def __init__(
             self,
-            user_requesting_admin_usage=None,
-            options=None):
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.user_requesting_admin_usage = user_requesting_admin_usage
 
@@ -558,9 +563,9 @@ class GetAllGraphInfo(Operation):
 
     def __init__(
             self,
-            graph_ids=None,
-            user_requesting_admin_usage=None,
-            options=None):
+            graph_ids: typing.List[str] = None,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.graph_ids = graph_ids
         self.user_requesting_admin_usage = user_requesting_admin_usage
@@ -589,9 +594,9 @@ class RemoveGraph(Operation):
 
     def __init__(
             self,
-            graph_id,
-            user_requesting_admin_usage=None,
-            options=None):
+            graph_id: str,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.graph_id = graph_id
         self.user_requesting_admin_usage = user_requesting_admin_usage
@@ -620,9 +625,9 @@ class RemoveGraphAndDeleteAllData(Operation):
 
     def __init__(
             self,
-            graph_id=None,
-            user_requesting_admin_usage=None,
-            options=None):
+            graph_id: str = None,
+            user_requesting_admin_usage: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.graph_id = graph_id
         self.user_requesting_admin_usage = user_requesting_admin_usage
@@ -664,22 +669,22 @@ class AddElementsFromHdfs(Operation):
 
     def __init__(
             self,
-            job_initialiser,
-            input_mapper_pairs,
-            failure_path,
-            output_path,
-            splits_file_path=None,
-            num_map_tasks=None,
-            working_path=None,
-            min_reduce_tasks=None,
-            max_reduce_tasks=None,
-            min_map_tasks=None,
-            use_provided_splits=None,
-            command_line_args=None,
-            partitioner=None,
-            max_map_tasks=None,
-            validate=None,
-            options=None):
+            job_initialiser: typing.Any,
+            input_mapper_pairs: typing.Dict[str, str],
+            failure_path: str,
+            output_path: str,
+            splits_file_path: str = None,
+            num_map_tasks: int = None,
+            working_path: str = None,
+            min_reduce_tasks: int = None,
+            max_reduce_tasks: int = None,
+            min_map_tasks: int = None,
+            use_provided_splits: bool = None,
+            command_line_args: typing.List[str] = None,
+            partitioner: typing.Any = None,
+            max_map_tasks: int = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_initialiser = job_initialiser
         self.splits_file_path = splits_file_path
@@ -761,23 +766,23 @@ class SampleDataForSplitPoints(Operation):
 
     def __init__(
             self,
-            splits_file_path,
-            job_initialiser,
-            input_mapper_pairs,
-            output_path,
-            num_map_tasks=None,
-            min_reduce_tasks=None,
-            num_splits=None,
-            max_reduce_tasks=None,
-            min_map_tasks=None,
-            use_provided_splits=None,
-            command_line_args=None,
-            compression_codec=None,
-            partitioner=None,
-            proportion_to_sample=None,
-            max_map_tasks=None,
-            validate=None,
-            options=None):
+            splits_file_path: str,
+            job_initialiser: typing.Any,
+            input_mapper_pairs: typing.Dict[str, str],
+            output_path: str,
+            num_map_tasks: int = None,
+            min_reduce_tasks: int = None,
+            num_splits: int = None,
+            max_reduce_tasks: int = None,
+            min_map_tasks: int = None,
+            use_provided_splits: bool = None,
+            command_line_args: typing.List[str] = None,
+            compression_codec: typing.Any = None,
+            partitioner: typing.Any = None,
+            proportion_to_sample: float = None,
+            max_map_tasks: int = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.splits_file_path = splits_file_path
         self.job_initialiser = job_initialiser
@@ -847,8 +852,8 @@ class CountAllElementsDefaultView(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -883,18 +888,18 @@ class AddNamedOperation(Operation):
 
     def __init__(
             self,
-            overwrite_flag=None,
-            write_access_predicate=None,
-            score=None,
-            read_access_roles=None,
-            read_access_predicate=None,
-            description=None,
-            operation_name=None,
-            operation_chain=None,
-            parameters=None,
-            write_access_roles=None,
-            labels=None,
-            options=None):
+            overwrite_flag: bool = None,
+            write_access_predicate: typing.Any = None,
+            score: int = None,
+            read_access_roles: typing.List[str] = None,
+            read_access_predicate: typing.Any = None,
+            description: str = None,
+            operation_name: str = None,
+            operation_chain: typing.Any = None,
+            parameters: typing.Dict[str, typing.Any] = None,
+            write_access_roles: typing.List[str] = None,
+            labels: typing.List[str] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.overwrite_flag = overwrite_flag
         self.write_access_predicate = write_access_predicate
@@ -949,8 +954,8 @@ class DeleteNamedOperation(Operation):
 
     def __init__(
             self,
-            operation_name,
-            options=None):
+            operation_name: str,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.operation_name = operation_name
 
@@ -974,7 +979,7 @@ class GetAllNamedOperations(Operation):
 
     def __init__(
             self,
-            options=None):
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
 
     def to_json(self):
@@ -997,10 +1002,10 @@ class NamedOperation(Operation):
 
     def __init__(
             self,
-            operation_name,
-            input=None,
-            parameters=None,
-            options=None):
+            operation_name: str,
+            input: typing.List[typing.Any] = None,
+            parameters: typing.Dict[str, typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.operation_name = operation_name
@@ -1038,15 +1043,15 @@ class AddNamedView(Operation):
 
     def __init__(
             self,
-            view,
-            name,
-            overwrite_flag=None,
-            write_access_predicate=None,
-            read_access_predicate=None,
-            description=None,
-            parameters=None,
-            write_access_roles=None,
-            options=None):
+            view: typing.Any,
+            name: str,
+            overwrite_flag: bool = None,
+            write_access_predicate: typing.Any = None,
+            read_access_predicate: typing.Any = None,
+            description: str = None,
+            parameters: typing.Dict[str, typing.Any] = None,
+            write_access_roles: typing.List[str] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.overwrite_flag = overwrite_flag
         self.write_access_predicate = write_access_predicate
@@ -1092,8 +1097,8 @@ class DeleteNamedView(Operation):
 
     def __init__(
             self,
-            name,
-            options=None):
+            name: str,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.name = name
 
@@ -1117,7 +1122,7 @@ class GetAllNamedViews(Operation):
 
     def __init__(
             self,
-            options=None):
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
 
     def to_json(self):
@@ -1138,8 +1143,8 @@ class OperationChain(Operation):
 
     def __init__(
             self,
-            operations=None,
-            options=None):
+            operations: typing.List[gafferpy.gaffer_operations.Operation] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.operations = operations
 
@@ -1168,12 +1173,12 @@ class ExportToOtherAuthorisedGraph(Operation):
 
     def __init__(
             self,
-            graph_id,
-            input=None,
-            parent_store_properties_id=None,
-            parent_schema_ids=None,
-            key=None,
-            options=None):
+            graph_id: str,
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            parent_store_properties_id: str = None,
+            parent_schema_ids: typing.List[str] = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.parent_store_properties_id = parent_store_properties_id
@@ -1216,14 +1221,14 @@ class ExportToOtherGraph(Operation):
 
     def __init__(
             self,
-            graph_id,
-            schema=None,
-            input=None,
-            parent_store_properties_id=None,
-            store_properties=None,
-            parent_schema_ids=None,
-            key=None,
-            options=None):
+            graph_id: str,
+            schema: typing.Dict = None,
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            parent_store_properties_id: str = None,
+            store_properties: typing.Dict = None,
+            parent_schema_ids: typing.List[str] = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.input = input
@@ -1266,8 +1271,8 @@ class Count(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -1293,9 +1298,9 @@ class CountGroups(Operation):
 
     def __init__(
             self,
-            input=None,
-            limit=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            limit: int = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.limit = limit
@@ -1323,8 +1328,8 @@ class DiscardOutput(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.Any = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -1350,9 +1355,9 @@ class ForEach(Operation):
 
     def __init__(
             self,
-            input=None,
-            operation=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            operation: gafferpy.gaffer_operations.Operation = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.operation = operation
@@ -1381,9 +1386,9 @@ class GenerateSplitPointsFromSample(Operation):
 
     def __init__(
             self,
-            input=None,
-            num_splits=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            num_splits: int = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.num_splits = num_splits
@@ -1411,8 +1416,8 @@ class GetVariable(Operation):
 
     def __init__(
             self,
-            variable_name=None,
-            options=None):
+            variable_name: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.variable_name = variable_name
 
@@ -1437,8 +1442,8 @@ class GetVariables(Operation):
 
     def __init__(
             self,
-            variable_names=None,
-            options=None):
+            variable_names: typing.List[str] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.variable_names = variable_names
 
@@ -1467,12 +1472,12 @@ class GetWalks(Operation):
 
     def __init__(
             self,
-            input=None,
-            operations=None,
-            include_partial=None,
-            conditional=None,
-            results_limit=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            operations: typing.Any = None,
+            include_partial: bool = None,
+            conditional: gafferpy.gaffer_operations.Conditional = None,
+            results_limit: int = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.operations = operations
@@ -1514,13 +1519,13 @@ class If(Operation):
 
     def __init__(
             self,
-            otherwise=None,
-            input=None,
-            condition=None,
-            conditional=None,
-            multi_input_wrapper=None,
-            then=None,
-            options=None):
+            otherwise: gafferpy.gaffer_operations.Operation = None,
+            input: typing.Any = None,
+            condition: bool = None,
+            conditional: gafferpy.gaffer_operations.Conditional = None,
+            multi_input_wrapper: typing.Any = None,
+            then: gafferpy.gaffer_operations.Operation = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.otherwise = otherwise
         self.input = input
@@ -1562,10 +1567,10 @@ class Limit(Operation):
 
     def __init__(
             self,
-            result_limit,
-            input=None,
-            truncate=None,
-            options=None):
+            result_limit: int,
+            input: typing.List[typing.Any] = None,
+            truncate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.result_limit = result_limit
@@ -1598,10 +1603,10 @@ class Map(Operation):
 
     def __init__(
             self,
-            functions,
-            input=None,
-            function=None,
-            options=None):
+            functions: typing.List[typing.Any],
+            input: typing.Any = None,
+            function: typing.Any = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.functions = functions
@@ -1634,10 +1639,10 @@ class Reduce(Operation):
 
     def __init__(
             self,
-            aggregate_function,
-            input=None,
-            identity=None,
-            options=None):
+            aggregate_function: gafferpy.gaffer_binaryoperators.BinaryOperator,
+            input: typing.List[typing.Any] = None,
+            identity: typing.Any = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.identity = identity
@@ -1670,10 +1675,10 @@ class SampleElementsForSplitPoints(Operation):
 
     def __init__(
             self,
-            input=None,
-            num_splits=None,
-            proportion_to_sample=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            num_splits: int = None,
+            proportion_to_sample: float = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.num_splits = num_splits
@@ -1704,8 +1709,8 @@ class ScoreOperationChain(Operation):
 
     def __init__(
             self,
-            operation_chain=None,
-            options=None):
+            operation_chain: gafferpy.generated_api.operations.OperationChain = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.operation_chain = operation_chain
 
@@ -1731,9 +1736,9 @@ class SetVariable(Operation):
 
     def __init__(
             self,
-            input=None,
-            variable_name=None,
-            options=None):
+            input: typing.Any = None,
+            variable_name: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.variable_name = variable_name
@@ -1761,8 +1766,8 @@ class SplitStoreFromFile(Operation):
 
     def __init__(
             self,
-            input_path,
-            options=None):
+            input_path: str,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input_path = input_path
 
@@ -1787,8 +1792,8 @@ class SplitStoreFromIterable(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -1815,10 +1820,10 @@ class Validate(Operation):
 
     def __init__(
             self,
-            input=None,
-            skip_invalid_elements=None,
-            validate=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            skip_invalid_elements: bool = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.skip_invalid_elements = skip_invalid_elements
@@ -1849,8 +1854,8 @@ class ValidateOperationChain(Operation):
 
     def __init__(
             self,
-            operation_chain,
-            options=None):
+            operation_chain: gafferpy.generated_api.operations.OperationChain,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.operation_chain = operation_chain
 
@@ -1880,13 +1885,13 @@ class While(Operation):
 
     def __init__(
             self,
-            input=None,
-            condition=None,
-            conditional=None,
-            max_repeats=None,
-            multi_input_wrapper=None,
-            operation=None,
-            options=None):
+            input: typing.Any = None,
+            condition: bool = None,
+            conditional: gafferpy.gaffer_operations.Conditional = None,
+            max_repeats: int = None,
+            multi_input_wrapper: typing.Any = None,
+            operation: gafferpy.gaffer_operations.Operation = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.condition = condition
@@ -1928,10 +1933,10 @@ class AddElements(Operation):
 
     def __init__(
             self,
-            input=None,
-            skip_invalid_elements=None,
-            validate=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            skip_invalid_elements: bool = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.skip_invalid_elements = skip_invalid_elements
@@ -1966,12 +1971,12 @@ class AddElementsFromFile(Operation):
 
     def __init__(
             self,
-            element_generator,
-            filename,
-            parallelism=None,
-            skip_invalid_elements=None,
-            validate=None,
-            options=None):
+            element_generator: typing.Any,
+            filename: str,
+            parallelism: int = None,
+            skip_invalid_elements: bool = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.element_generator = element_generator
         self.filename = filename
@@ -2015,15 +2020,15 @@ class AddElementsFromKafka(Operation):
 
     def __init__(
             self,
-            element_generator,
-            bootstrap_servers,
-            group_id,
-            topic,
-            parallelism=None,
-            consume_as=None,
-            skip_invalid_elements=None,
-            validate=None,
-            options=None):
+            element_generator: typing.Any,
+            bootstrap_servers: typing.List[str],
+            group_id: str,
+            topic: str,
+            parallelism: int = None,
+            consume_as: typing.Any = None,
+            skip_invalid_elements: bool = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.element_generator = element_generator
         self.bootstrap_servers = bootstrap_servers
@@ -2075,14 +2080,14 @@ class AddElementsFromSocket(Operation):
 
     def __init__(
             self,
-            element_generator,
-            hostname,
-            port,
-            delimiter=None,
-            parallelism=None,
-            skip_invalid_elements=None,
-            validate=None,
-            options=None):
+            element_generator: typing.Any,
+            hostname: str,
+            port: int,
+            delimiter: str = None,
+            parallelism: int = None,
+            skip_invalid_elements: bool = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.element_generator = element_generator
         self.hostname = hostname
@@ -2131,14 +2136,14 @@ class CsvToElements(Operation):
 
     def __init__(
             self,
-            input=None,
-            trim=None,
-            delimiter=None,
-            null_string=None,
-            skip_invalid_elements=None,
-            csv_format=None,
-            validate=None,
-            options=None):
+            input: typing.List[str] = None,
+            trim: bool = None,
+            delimiter: str = None,
+            null_string: str = None,
+            skip_invalid_elements: bool = None,
+            csv_format: typing.Any = None,
+            validate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.trim = trim
@@ -2182,9 +2187,9 @@ class Max(Operation):
 
     def __init__(
             self,
-            comparators,
-            input=None,
-            options=None):
+            comparators: typing.Any,
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.comparators = comparators
@@ -2213,9 +2218,9 @@ class Min(Operation):
 
     def __init__(
             self,
-            comparators,
-            input=None,
-            options=None):
+            comparators: typing.Any,
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.comparators = comparators
@@ -2246,11 +2251,11 @@ class Sort(Operation):
 
     def __init__(
             self,
-            comparators,
-            input=None,
-            result_limit=None,
-            deduplicate=None,
-            options=None):
+            comparators: typing.Any,
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            result_limit: int = None,
+            deduplicate: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.result_limit = result_limit
@@ -2284,8 +2289,8 @@ class GetExports(Operation):
 
     def __init__(
             self,
-            get_exports=None,
-            options=None):
+            get_exports: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.get_exports = get_exports
 
@@ -2312,10 +2317,10 @@ class ExportToLocalFile(Operation):
 
     def __init__(
             self,
-            file_path,
-            input=None,
-            key=None,
-            options=None):
+            file_path: str,
+            input: typing.List[str] = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.file_path = file_path
@@ -2348,10 +2353,10 @@ class ImportFromLocalFile(Operation):
 
     def __init__(
             self,
-            file_path,
-            job_id=None,
-            key=None,
-            options=None):
+            file_path: str,
+            job_id: str = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_id = job_id
         self.file_path = file_path
@@ -2384,10 +2389,10 @@ class ExportToGafferResultCache(Operation):
 
     def __init__(
             self,
-            input=None,
-            op_auths=None,
-            key=None,
-            options=None):
+            input: typing.Any = None,
+            op_auths: typing.Set[str] = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.op_auths = op_auths
@@ -2419,9 +2424,9 @@ class GetGafferResultCacheExport(Operation):
 
     def __init__(
             self,
-            job_id=None,
-            key=None,
-            options=None):
+            job_id: str = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_id = job_id
         self.key = key
@@ -2450,9 +2455,9 @@ class ExportToSet(Operation):
 
     def __init__(
             self,
-            input=None,
-            key=None,
-            options=None):
+            input: typing.Any = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.key = key
@@ -2483,11 +2488,11 @@ class GetSetExport(Operation):
 
     def __init__(
             self,
-            job_id=None,
-            start=None,
-            end=None,
-            key=None,
-            options=None):
+            job_id: str = None,
+            start: int = None,
+            end: int = None,
+            key: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_id = job_id
         self.start = start
@@ -2523,10 +2528,10 @@ class Aggregate(Operation):
 
     def __init__(
             self,
-            input=None,
-            entities=None,
-            edges=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            entities: typing.Dict[str, gafferpy.gaffer_operations.AggregatePair] = None,
+            edges: typing.Dict[str, gafferpy.gaffer_operations.AggregatePair] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.entities = entities
@@ -2562,13 +2567,13 @@ class Filter(Operation):
 
     def __init__(
             self,
-            input=None,
-            global_edges=None,
-            global_entities=None,
-            entities=None,
-            edges=None,
-            global_elements=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            global_edges: gafferpy.generated_api.predicates.ElementFilter = None,
+            global_entities: gafferpy.generated_api.predicates.ElementFilter = None,
+            entities: typing.Dict[str, gafferpy.generated_api.predicates.ElementFilter] = None,
+            edges: typing.Dict[str, gafferpy.generated_api.predicates.ElementFilter] = None,
+            global_elements: gafferpy.generated_api.predicates.ElementFilter = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.global_edges = global_edges
@@ -2610,10 +2615,10 @@ class Transform(Operation):
 
     def __init__(
             self,
-            input=None,
-            entities=None,
-            edges=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            entities: typing.Dict[str, gafferpy.generated_api.functions.ElementTransformer] = None,
+            edges: typing.Dict[str, gafferpy.generated_api.functions.ElementTransformer] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.entities = entities
@@ -2645,9 +2650,9 @@ class GenerateElements(Operation):
 
     def __init__(
             self,
-            element_generator,
-            input=None,
-            options=None):
+            element_generator: typing.Any,
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.element_generator = element_generator
@@ -2676,9 +2681,9 @@ class GenerateObjects(Operation):
 
     def __init__(
             self,
-            element_generator,
-            input=None,
-            options=None):
+            element_generator: typing.Any,
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.element_generator = element_generator
@@ -2698,7 +2703,7 @@ class GetAdjacentIds(Operation):
 
     Args:
         input: 
-        view: Used to filter and transform results
+        view: 
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
         views: 
@@ -2710,12 +2715,12 @@ class GetAdjacentIds(Operation):
 
     def __init__(
             self,
-            input=None,
-            view=None,
-            include_incoming_out_going=None,
-            directed_type=None,
-            views=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            view: gafferpy.gaffer_operations.View = None,
+            include_incoming_out_going: str = None,
+            directed_type: str = None,
+            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -2743,7 +2748,7 @@ class GetAllElements(Operation):
     Gets all elements compatible with a provided View
 
     Args:
-        view: Used to filter and transform results
+        view: 
         directed_type: Is the Edge directed?
         views: 
         options: Additional map of options
@@ -2754,10 +2759,10 @@ class GetAllElements(Operation):
 
     def __init__(
             self,
-            view=None,
-            directed_type=None,
-            views=None,
-            options=None):
+            view: gafferpy.gaffer_operations.View = None,
+            directed_type: str = None,
+            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.view = view
         self.directed_type = directed_type
@@ -2780,7 +2785,7 @@ class GetElements(Operation):
 
     Args:
         input: 
-        view: Used to filter and transform results
+        view: 
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
         views: 
@@ -2792,12 +2797,12 @@ class GetElements(Operation):
 
     def __init__(
             self,
-            input=None,
-            view=None,
-            include_incoming_out_going=None,
-            directed_type=None,
-            views=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            view: gafferpy.gaffer_operations.View = None,
+            include_incoming_out_going: str = None,
+            directed_type: str = None,
+            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.view = view
@@ -2834,8 +2839,8 @@ class GetFromEndpoint(Operation):
 
     def __init__(
             self,
-            endpoint,
-            options=None):
+            endpoint: str,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.endpoint = endpoint
 
@@ -2860,8 +2865,8 @@ class CancelScheduledJob(Operation):
 
     def __init__(
             self,
-            job_id,
-            options=None):
+            job_id: str,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_id = job_id
 
@@ -2885,7 +2890,7 @@ class GetAllJobDetails(Operation):
 
     def __init__(
             self,
-            options=None):
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
 
     def to_json(self):
@@ -2906,8 +2911,8 @@ class GetJobDetails(Operation):
 
     def __init__(
             self,
-            job_id=None,
-            options=None):
+            job_id: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_id = job_id
 
@@ -2932,8 +2937,8 @@ class GetJobResults(Operation):
 
     def __init__(
             self,
-            job_id=None,
-            options=None):
+            job_id: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.job_id = job_id
 
@@ -2964,14 +2969,14 @@ class Join(Operation):
 
     def __init__(
             self,
-            flatten=None,
-            input=None,
-            join_type=None,
-            match_key=None,
-            collection_limit=None,
-            match_method=None,
-            operation=None,
-            options=None):
+            flatten: bool = None,
+            input: typing.List[typing.Any] = None,
+            join_type: str = None,
+            match_key: str = None,
+            collection_limit: int = None,
+            match_method: typing.Any = None,
+            operation: gafferpy.gaffer_operations.Operation = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.flatten = flatten
         self.input = input
@@ -3014,8 +3019,8 @@ class ToArray(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -3032,7 +3037,7 @@ class ToCsv(Operation):
 
     Args:
         input: 
-        csv_generator: Generates a CSV string for each element
+        element_generator: Generates a CSV string for each element
         include_header: 
         csv_format: 
         options: Additional map of options
@@ -3043,14 +3048,14 @@ class ToCsv(Operation):
 
     def __init__(
             self,
-            input=None,
-            csv_generator=None,
-            include_header=None,
-            csv_format=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            element_generator: gafferpy.generated_api.functions.CsvGenerator = None,
+            include_header: bool = None,
+            csv_format: typing.Any = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
-        self.csv_generator = csv_generator
+        self.element_generator = element_generator
         self.include_header = include_header
         self.csv_format = csv_format
 
@@ -3058,8 +3063,8 @@ class ToCsv(Operation):
         operation_json = super().to_json()
         if self.input is not None:
             operation_json["input"] = self.input
-        if self.csv_generator is not None:
-            operation_json["csvGenerator"] = self.csv_generator
+        if self.element_generator is not None:
+            operation_json["elementGenerator"] = self.element_generator
         if self.include_header is not None:
             operation_json["includeHeader"] = self.include_header
         if self.csv_format is not None:
@@ -3081,8 +3086,8 @@ class ToEntitySeeds(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -3107,8 +3112,8 @@ class ToList(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -3134,9 +3139,9 @@ class ToMap(Operation):
 
     def __init__(
             self,
-            element_generator,
-            input=None,
-            options=None):
+            element_generator: gafferpy.generated_api.functions.MapGenerator,
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.element_generator = element_generator
@@ -3165,9 +3170,9 @@ class ToOpenCypherCsv(Operation):
 
     def __init__(
             self,
-            input=None,
-            neo4j_format=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.Element] = None,
+            neo4j_format: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.neo4j_format = neo4j_format
@@ -3195,8 +3200,8 @@ class ToSet(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -3221,8 +3226,8 @@ class ToSingletonList(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.Any = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -3247,8 +3252,8 @@ class ToStream(Operation):
 
     def __init__(
             self,
-            input=None,
-            options=None):
+            input: typing.List[typing.Any] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
 
@@ -3275,10 +3280,10 @@ class ToVertices(Operation):
 
     def __init__(
             self,
-            input=None,
-            use_matched_vertex=None,
-            edge_vertices=None,
-            options=None):
+            input: typing.List[gafferpy.gaffer_core.ElementSeed] = None,
+            use_matched_vertex: str = None,
+            edge_vertices: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
         self.use_matched_vertex = use_matched_vertex
@@ -3308,7 +3313,7 @@ class GetProxyProperties(Operation):
 
     def __init__(
             self,
-            options=None):
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
 
     def to_json(self):
@@ -3328,7 +3333,7 @@ class GetProxyUrl(Operation):
 
     def __init__(
             self,
-            options=None):
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
 
     def to_json(self):
@@ -3348,7 +3353,7 @@ class DeleteAllData(Operation):
 
     def __init__(
             self,
-            options=None):
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
 
     def to_json(self):
@@ -3369,8 +3374,8 @@ class GetSchema(Operation):
 
     def __init__(
             self,
-            compact=None,
-            options=None):
+            compact: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.compact = compact
 
@@ -3395,8 +3400,8 @@ class GetTraits(Operation):
 
     def __init__(
             self,
-            current_traits=None,
-            options=None):
+            current_traits: bool = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.current_traits = current_traits
 
@@ -3422,9 +3427,9 @@ class HasTrait(Operation):
 
     def __init__(
             self,
-            current_traits=None,
-            trait=None,
-            options=None):
+            current_traits: bool = None,
+            trait: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.current_traits = current_traits
         self.trait = trait
@@ -3454,10 +3459,10 @@ class AddSchemaToLibrary(Operation):
 
     def __init__(
             self,
-            schema,
-            id,
-            parent_schema_ids=None,
-            options=None):
+            schema: typing.Dict,
+            id: str,
+            parent_schema_ids: typing.List[str] = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.schema = schema
         self.id = id
@@ -3490,10 +3495,10 @@ class AddStorePropertiesToLibrary(Operation):
 
     def __init__(
             self,
-            store_properties,
-            id,
-            parent_properties_id=None,
-            options=None):
+            store_properties: typing.Dict,
+            id: str,
+            parent_properties_id: str = None,
+            options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.store_properties = store_properties
         self.parent_properties_id = parent_properties_id
