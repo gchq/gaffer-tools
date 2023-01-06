@@ -763,7 +763,7 @@ class If(If):
 # Element Input
 
 
-class GetElements(GetElements):
+class GetOperation(Operation):
     def to_json(self):
         operation_json = super().to_json()
         if self.input is not None:
@@ -771,6 +771,9 @@ class GetElements(GetElements):
             if not isinstance(self.input, list):
                 self.input = [self.input]
             for seed in self.input:
+                if isinstance(seed, dict):
+                    if seed.get("class"):
+                        seed = JsonConverter.from_json(seed)
                 if isinstance(seed, ElementSeed):
                     json_seeds.append(seed.to_json())
                 else:
@@ -782,70 +785,31 @@ class GetElements(GetElements):
         return operation_json
 
 
-class ToVertices(ToVertices):
+class GetElements(GetOperation, GetElements):
     def to_json(self):
-        operation_json = super().to_json()
-        if self.input is not None:
-            json_seeds = []
-            if not isinstance(self.input, list):
-                self.input = [self.input]
-            for seed in self.input:
-                if isinstance(seed, ElementSeed):
-                    json_seeds.append(seed.to_json())
-                else:
-                    json_seeds.append(EntitySeed(seed).to_json())
-            operation_json['input'] = json_seeds
-        return operation_json
+        return super().to_json()
+
+
+class ToVertices(GetOperation, ToVertices):
+    def to_json(self):
+        return super().to_json()
 
 # Entity Input
 
 
-class GetWalks(GetWalks):
+class GetWalks(GetOperation, GetWalks):
     def to_json(self):
-        operation_json = super().to_json()
-        if self.input is not None:
-            json_seeds = []
-            if not isinstance(self.input, list):
-                self.input = [self.input]
-            for seed in self.input:
-                if isinstance(seed, EntitySeed):
-                    json_seeds.append(seed.to_json())
-                else:
-                    json_seeds.append(EntitySeed(seed).to_json())
-            operation_json['input'] = json_seeds
-        return operation_json
+        return super().to_json()
 
 
-class GetAdjacentIds(GetAdjacentIds):
+class GetAdjacentIds(GetOperation, GetAdjacentIds):
     def to_json(self):
-        operation_json = super().to_json()
-        if self.input is not None:
-            json_seeds = []
-            if not isinstance(self.input, list):
-                self.input = [self.input]
-            for seed in self.input:
-                if isinstance(seed, EntitySeed):
-                    json_seeds.append(seed.to_json())
-                else:
-                    json_seeds.append(EntitySeed(seed).to_json())
-            operation_json['input'] = json_seeds
-        return operation_json
+        return super().to_json()
 
 
-class GetElementsWithinSet(GetElementsWithinSet):
+class GetElementsWithinSet(GetOperation, GetElementsWithinSet):
     def to_json(self):
-        operation_json = super().to_json()
-        if self.input is not None:
-            json_seeds = []
-            if not isinstance(self.input, list):
-                self.input = [self.input]
-            for seed in self.input:
-                if isinstance(seed, EntitySeed):
-                    json_seeds.append(seed.to_json())
-                else:
-                    json_seeds.append(EntitySeed(seed).to_json())
-            operation_json['input'] = json_seeds
-        return operation_json
+        return super().to_json()
 
 
 def load_operation_json_map():
