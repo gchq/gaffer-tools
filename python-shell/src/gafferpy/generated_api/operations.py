@@ -3360,6 +3360,21 @@ class DeleteAllData(Operation):
         return super().to_json()
 
 
+class DeleteAllData(Operation):
+    """
+    This operation is used to self delete all retained data
+    """
+    CLASS = "uk.gov.gchq.gaffer.store.operation.DeleteAllData"
+
+    def __init__(
+            self,
+            options=None):
+        super().__init__(_class_name=self.CLASS, options=options)
+
+    def to_json(self):
+        return super().to_json()
+
+
 class GetSchema(Operation):
     """
     Gets the Schema of a Graph
