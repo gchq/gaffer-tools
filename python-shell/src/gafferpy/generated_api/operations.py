@@ -23,8 +23,7 @@ import typing
 
 import gafferpy.gaffer_core
 import gafferpy.gaffer_functions
-import gafferpy.gaffer_operations
-from gafferpy.gaffer_operations import Operation
+from gafferpy.gaffer_operations import Operation, View, Conditional, AggregatePair
 
 
 class ImportAccumuloKeyValueFiles(Operation):
@@ -78,11 +77,11 @@ class GetElementsBetweenSets(Operation):
     def __init__(
             self,
             input: typing.List[typing.Any] = None,
-            view: gafferpy.gaffer_operations.View = None,
+            view: View = None,
             include_incoming_out_going: str = None,
             input_b: typing.List[typing.Any] = None,
             directed_type: str = None,
-            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            views: typing.List[View] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -128,10 +127,10 @@ class GetElementsInRanges(Operation):
     def __init__(
             self,
             input: typing.List[typing.Tuple[gafferpy.gaffer_core.ElementSeed, gafferpy.gaffer_core.ElementSeed]] = None,
-            view: gafferpy.gaffer_operations.View = None,
+            view: View = None,
             include_incoming_out_going: str = None,
             directed_type: str = None,
-            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            views: typing.List[View] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -173,9 +172,9 @@ class GetElementsWithinSet(Operation):
     def __init__(
             self,
             input: typing.List[typing.Any] = None,
-            view: gafferpy.gaffer_operations.View = None,
+            view: View = None,
             directed_type: str = None,
-            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            views: typing.List[View] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -215,10 +214,10 @@ class SummariseGroupOverRanges(Operation):
     def __init__(
             self,
             input: typing.List[typing.Tuple[gafferpy.gaffer_core.ElementSeed, gafferpy.gaffer_core.ElementSeed]] = None,
-            view: gafferpy.gaffer_operations.View = None,
+            view: View = None,
             include_incoming_out_going: str = None,
             directed_type: str = None,
-            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            views: typing.List[View] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -493,7 +492,7 @@ class FederatedOperation(Operation):
             skip_failed_federated_execution: typing.Any = None,
             input: typing.Any = None,
             graph_ids: typing.List[str] = None,
-            operation: gafferpy.gaffer_operations.Operation = None,
+            operation: Operation = None,
             merge_function: typing.Any = None,
             user_requesting_admin_usage: bool = None,
             options: typing.Dict[str, str] = None):
@@ -1143,7 +1142,7 @@ class OperationChain(Operation):
 
     def __init__(
             self,
-            operations: typing.List[gafferpy.gaffer_operations.Operation] = None,
+            operations: typing.List[Operation] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.operations = operations
@@ -1356,7 +1355,7 @@ class ForEach(Operation):
     def __init__(
             self,
             input: typing.List[typing.Any] = None,
-            operation: gafferpy.gaffer_operations.Operation = None,
+            operation: Operation = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -1475,7 +1474,7 @@ class GetWalks(Operation):
             input: typing.List[typing.Any] = None,
             operations: typing.Any = None,
             include_partial: bool = None,
-            conditional: gafferpy.gaffer_operations.Conditional = None,
+            conditional: Conditional = None,
             results_limit: int = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
@@ -1519,12 +1518,12 @@ class If(Operation):
 
     def __init__(
             self,
-            otherwise: gafferpy.gaffer_operations.Operation = None,
+            otherwise: Operation = None,
             input: typing.Any = None,
             condition: bool = None,
-            conditional: gafferpy.gaffer_operations.Conditional = None,
+            conditional: Conditional = None,
             multi_input_wrapper: typing.Any = None,
-            then: gafferpy.gaffer_operations.Operation = None,
+            then: Operation = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.otherwise = otherwise
@@ -1709,7 +1708,7 @@ class ScoreOperationChain(Operation):
 
     def __init__(
             self,
-            operation_chain: gafferpy.generated_api.operations.OperationChain = None,
+            operation_chain: OperationChain = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.operation_chain = operation_chain
@@ -1854,7 +1853,7 @@ class ValidateOperationChain(Operation):
 
     def __init__(
             self,
-            operation_chain: gafferpy.generated_api.operations.OperationChain,
+            operation_chain: OperationChain,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.operation_chain = operation_chain
@@ -1887,10 +1886,10 @@ class While(Operation):
             self,
             input: typing.Any = None,
             condition: bool = None,
-            conditional: gafferpy.gaffer_operations.Conditional = None,
+            conditional: Conditional = None,
             max_repeats: int = None,
             multi_input_wrapper: typing.Any = None,
-            operation: gafferpy.gaffer_operations.Operation = None,
+            operation: Operation = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -2529,8 +2528,8 @@ class Aggregate(Operation):
     def __init__(
             self,
             input: typing.List[gafferpy.gaffer_core.Element] = None,
-            entities: typing.Dict[str, gafferpy.gaffer_operations.AggregatePair] = None,
-            edges: typing.Dict[str, gafferpy.gaffer_operations.AggregatePair] = None,
+            entities: typing.Dict[str, AggregatePair] = None,
+            edges: typing.Dict[str, AggregatePair] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -2716,10 +2715,10 @@ class GetAdjacentIds(Operation):
     def __init__(
             self,
             input: typing.List[typing.Any] = None,
-            view: gafferpy.gaffer_operations.View = None,
+            view: View = None,
             include_incoming_out_going: str = None,
             directed_type: str = None,
-            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            views: typing.List[View] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -2759,9 +2758,9 @@ class GetAllElements(Operation):
 
     def __init__(
             self,
-            view: gafferpy.gaffer_operations.View = None,
+            view: View = None,
             directed_type: str = None,
-            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            views: typing.List[View] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.view = view
@@ -2798,10 +2797,10 @@ class GetElements(Operation):
     def __init__(
             self,
             input: typing.List[typing.Any] = None,
-            view: gafferpy.gaffer_operations.View = None,
+            view: View = None,
             include_incoming_out_going: str = None,
             directed_type: str = None,
-            views: typing.List[gafferpy.gaffer_operations.View] = None,
+            views: typing.List[View] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
@@ -2975,7 +2974,7 @@ class Join(Operation):
             match_key: str = None,
             collection_limit: int = None,
             match_method: typing.Any = None,
-            operation: gafferpy.gaffer_operations.Operation = None,
+            operation: Operation = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.flatten = flatten
@@ -3354,21 +3353,6 @@ class DeleteAllData(Operation):
     def __init__(
             self,
             options: typing.Dict[str, str] = None):
-        super().__init__(_class_name=self.CLASS, options=options)
-
-    def to_json(self):
-        return super().to_json()
-
-
-class DeleteAllData(Operation):
-    """
-    This operation is used to self delete all retained data
-    """
-    CLASS = "uk.gov.gchq.gaffer.store.operation.DeleteAllData"
-
-    def __init__(
-            self,
-            options=None):
         super().__init__(_class_name=self.CLASS, options=options)
 
     def to_json(self):

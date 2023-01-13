@@ -29,8 +29,13 @@ def parse_java_type_to_string(java_type: str) -> str:
     if isinstance(python_type, type):
         if python_type.__module__ == "builtins":
             return python_type.__name__
-        return f"{python_type.__module__}.{python_type.__name__}"
-    return str(python_type)
+        type_name = f"{python_type.__module__}.{python_type.__name__}"
+    else:
+        type_name = str(python_type)
+
+    type_name = type_name.replace("gafferpy.gaffer_operations.","")
+    type_name = type_name.replace("gafferpy.generated_api.operations.", "")
+    return type_name
 
 def parse_java_type(java_type: str) -> type:
     match java_type.split("["):

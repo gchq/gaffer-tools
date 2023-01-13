@@ -5,8 +5,7 @@ import typing
 
 import gafferpy.gaffer_core
 import gafferpy.gaffer_functions
-import gafferpy.gaffer_operations
-from gafferpy.gaffer_operations import Operation
+from gafferpy.gaffer_operations import Operation, View, Conditional, AggregatePair
 {% for op in operations %}
 {%- if op.name != "uk.gov.gchq.gaffer.operation.OperationChainDAO" %}
 
