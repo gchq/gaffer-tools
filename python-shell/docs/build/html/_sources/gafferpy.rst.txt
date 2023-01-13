@@ -101,14 +101,6 @@ gafferpy.gaffer\_types module
    :undoc-members:
    :show-inheritance:
 
-gafferpy.tester module
-----------------------
-
-.. automodule:: gafferpy.tester
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
