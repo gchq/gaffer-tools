@@ -43,32 +43,6 @@ jobs:
     - name: Check all modules are tested
       run: ./cd/check_modules.sh
 
-  ui-selenium-test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup JDK
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'zulu'
-        java-version: '8'
-
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.m2/repository
-          !~/.m2/repository/uk
-        key: gaffer-tools-dependencies
-
-    - name: Setup System tests
-      run: ./cd/setup_ui_system_tests.sh
-
-    - name: Run Selenium Tests
-      uses: GabrielBB/xvfb-action@v1
-      with:
-        run: mvn verify -P system-test -Dwebdriver.gecko.driver=geckodriver -pl ui
-
   python-tests:
     runs-on: ubuntu-latest
     steps:
@@ -95,36 +69,6 @@ jobs:
     - name: Run Python tests
       working-directory: python-shell
       run: python3 -m unittest discover -s src
-
-  ui-jasmine-test:
-    runs-on: ubuntu-latest
-    env:
-      MAVEN_OPTS: -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup JDK
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'zulu'
-        java-version: '8'
-
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.m2/repository
-          !~/.m2/repository/uk
-        key: gaffer-tools-dependencies
-
-    - name: Install dependencies
-      run: mvn -q clean install -pl :ui -Pquick -am
-
-    - name: Run Tests
-      run: xvfb-run mvn verify -pl :ui
-
-    - name: Cleanup xvfb pidx
-      uses: bcomnes/cleanup-xvfb@v1
 
   java-build:
     runs-on: ubuntu-latest

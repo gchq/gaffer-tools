@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2016-2022 Crown Copyright
+  ~ Copyright 2016-2023 Crown Copyright
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>ui</module>
         <module>mini-accumulo-cluster</module>
         <module>performance-testing</module>
         <module>random-element-generation</module>
@@ -132,65 +131,6 @@
                                 <configuration combine.self="override">
 
                                 </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>system-test</id>
-            <properties>
-                <skip.surefire.tests>true</skip.surefire.tests>
-                <skip.failsafe.tests>false</skip.failsafe.tests>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <!-- Older Failsafe required for Selenium -->
-                        <version>2.22.2</version>
-                        <executions>
-                            <execution>
-                                <id>system-test</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <skipITs>${skip.failsafe.tests}</skipITs>
-                            <excludes>
-                                <exclude>**/*$*</exclude>
-                                <exclude>**/performance/**</exclude>
-                            </excludes>
-                            <includes>
-                                <include>**/*SystemTest.java</include>
-                                <include>**/*ST.java</include>
-                                <include>**/*STs.java</include>
-                                <include>**/*SystemTests.java</include>
-                            </includes>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>validate</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.github.spotbugs</groupId>
-                        <artifactId>spotbugs-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>analyze-compile</id>
-                                <phase>none</phase>
                             </execution>
                         </executions>
                     </plugin>
