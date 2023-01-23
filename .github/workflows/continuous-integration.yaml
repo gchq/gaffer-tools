@@ -63,7 +63,7 @@ jobs:
 
     - name: Start road-traffic example
       run: |
-        ./ui/example/road-traffic/scripts/start.sh &
+        mvn verify -Proad-traffic-demo &
         sleep 1m
 
     - name: Run Python tests
