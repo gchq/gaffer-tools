@@ -63,7 +63,7 @@ jobs:
 
     - name: Start road-traffic example
       run: |
-        mvn verify -Proad-traffic-demo &
+        mvn verify -ntp -Proad-traffic-demo &
         sleep 1m
 
     - name: Run Python tests
