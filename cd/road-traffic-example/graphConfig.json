@@ -1,0 +1,6 @@
+{
+  "graphId": "roadTraffic",
+  "library": {
+    "class": "uk.gov.gchq.gaffer.store.library.HashMapGraphLibrary"
+  }
+}

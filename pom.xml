@@ -28,11 +28,7 @@
     <version>2.0.0-alpha-1.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>mini-accumulo-cluster</module>
-        <module>performance-testing</module>
-        <module>random-element-generation</module>
-    </modules>
+    <!-- For <modules> see default profile -->
 
     <properties>
         <gaffer.version>2.0.0-alpha-0.4</gaffer.version>
@@ -131,6 +127,110 @@
                                 <configuration combine.self="override">
 
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- If no other profile is in use then include modules -->
+            <modules>
+                <module>mini-accumulo-cluster</module>
+                <module>performance-testing</module>
+                <module>random-element-generation</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>road-traffic-demo</id>
+            <!-- Used for Python CI/CD tests -->
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+                <enforcer.skip>true</enforcer.skip>
+                <checkstyle.skip>true</checkstyle.skip>
+                <spotbugs.skip>true</spotbugs.skip>
+                <standalone-rest-path>rest</standalone-rest-path>
+                <standalone-port>8080</standalone-port>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>uk.gov.gchq.gaffer</groupId>
+                    <artifactId>road-traffic-rest</artifactId>
+                    <version>${gaffer.version}</version>
+                    <type>war</type>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo.plugin.version}</version>
+                        <configuration>
+                            <deployables>
+                                <deployable>
+                                    <groupId>uk.gov.gchq.gaffer</groupId>
+                                    <artifactId>road-traffic-rest</artifactId>
+                                    <type>war</type>
+                                    <properties>
+                                        <context>/${standalone-rest-path}</context>
+                                    </properties>
+                                </deployable>
+                            </deployables>
+                            <container>
+                                <containerId>tomcat9x</containerId>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>uk.gov.gchq.gaffer</groupId>
+                                        <artifactId>road-traffic-rest</artifactId>
+                                        <type>war</type>
+                                    </dependency>
+                                </dependencies>
+                                <systemProperties>
+                                    <gaffer.properties.app.title>
+                                        Road Traffic Example
+                                    </gaffer.properties.app.title>
+                                    <gaffer.rest-api.basePath>
+                                        ${standalone-rest-path}
+                                    </gaffer.rest-api.basePath>
+                                    <gaffer.graph.config>
+                                        ${project.basedir}/cd/road-traffic-example/graphConfig.json
+                                    </gaffer.graph.config>
+                                    <gaffer.schemas>
+                                        ${project.basedir}/cd/road-traffic-example/schema
+                                    </gaffer.schemas>
+                                    <gaffer.storeProperties>
+                                        ${project.basedir}/cd/road-traffic-example/store.properties
+                                    </gaffer.storeProperties>
+                                    <roadTraffic.dataLoader.dataPath>
+                                        ${project.basedir}/cd/road-traffic-example/roadTrafficSampleData.csv
+                                    </roadTraffic.dataLoader.dataPath>
+                                    <gaffer.graph.hook.add.operations.path>
+                                        ${project.basedir}/cd/road-traffic-example/addOperationsToChain.json
+                                    </gaffer.graph.hook.add.operations.path>
+                                    <gaffer.error-mode.debug>
+                                        false
+                                    </gaffer.error-mode.debug>
+                                </systemProperties>
+                            </container>
+                            <configuration>
+                                <properties>
+                                    <cargo.servlet.port>${standalone-port}</cargo.servlet.port>
+                                </properties>
+                            </configuration>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
