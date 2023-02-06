@@ -28,10 +28,10 @@ pip install -e .
 
 ## Quick Start
 
-The python shell connects to a running Gaffer REST API. You can start the Gaffer road-traffic-demo rest server and [ui](../ui/README.md) using the command:
+The python shell connects to a running Gaffer REST API. You can start the Gaffer road-traffic-demo rest server using the command:
 
 ```bash
-./ui/example/road-traffic/scripts/start.sh
+mvn verify -Proad-traffic-demo
 ```
 
 ```python
@@ -81,7 +81,7 @@ Please ensure that your coding style is consistent with the rest of the Gaffer p
 
 ```bash
 # To run all of the tests, first deploy the road traffic example
-./ui/example/road-traffic/scripts/start.sh
+mvn verify -Proad-traffic-demo
 
 # Then from within the python-shell folder run
 python -m unittest discover
