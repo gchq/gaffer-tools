@@ -1472,7 +1472,7 @@ class GetWalks(Operation):
     def __init__(
             self,
             input: typing.List[typing.Any] = None,
-            operations: typing.Any = None,
+            operations: typing.List[typing.Any] = None,
             include_partial: bool = None,
             conditional: Conditional = None,
             results_limit: int = None,
@@ -1602,7 +1602,7 @@ class Map(Operation):
 
     def __init__(
             self,
-            functions: typing.List[typing.Any],
+            functions: typing.List,
             input: typing.Any = None,
             function: typing.Any = None,
             options: typing.Dict[str, str] = None):
@@ -2186,7 +2186,7 @@ class Max(Operation):
 
     def __init__(
             self,
-            comparators: typing.Any,
+            comparators: typing.List[typing.Any],
             input: typing.List[gafferpy.gaffer_core.Element] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
@@ -2217,7 +2217,7 @@ class Min(Operation):
 
     def __init__(
             self,
-            comparators: typing.Any,
+            comparators: typing.List[typing.Any],
             input: typing.List[gafferpy.gaffer_core.Element] = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
@@ -2250,7 +2250,7 @@ class Sort(Operation):
 
     def __init__(
             self,
-            comparators: typing.Any,
+            comparators: typing.List[typing.Any],
             input: typing.List[gafferpy.gaffer_core.Element] = None,
             result_limit: int = None,
             deduplicate: bool = None,
