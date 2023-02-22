@@ -16,7 +16,7 @@ class {{ short_name(op.name) }}(Operation):
     Args:
         {%- for field in op.fields|sort(reverse=true, attribute="required") %}
         {%- if field.name != "options" %}
-        {{ snake_case(field.name) }}: {{ field.summary }}
+        {{ snake_case(field.name) }}:{% if field.summary %} {% endif %}{{ field.summary }}
         {%- endif %}
         {%- endfor %}
         options: Additional map of options
