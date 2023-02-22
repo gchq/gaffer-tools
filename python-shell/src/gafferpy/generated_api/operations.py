@@ -31,8 +31,8 @@ class ImportAccumuloKeyValueFiles(Operation):
     Imports Accumulo key value files
 
     Args:
-        input_path: 
-        failure_path: 
+        input_path:
+        failure_path:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -62,12 +62,12 @@ class GetElementsBetweenSets(Operation):
     Gets edges that exist between 2 sets and entities in the first set
 
     Args:
-        input: 
-        view: 
+        input:
+        view:
         include_incoming_out_going: Should the edges point towards, or away from your seeds
-        input_b: 
+        input_b:
         directed_type: Is the Edge directed?
-        views: 
+        views:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -113,11 +113,11 @@ class GetElementsInRanges(Operation):
     Gets elements that have vertices within a given range
 
     Args:
-        input: 
-        view: 
+        input:
+        view:
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
-        views: 
+        views:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -159,10 +159,10 @@ class GetElementsWithinSet(Operation):
     Gets edges with both vertices in a given set and entities with vertices in a given set
 
     Args:
-        input: 
-        view: 
+        input:
+        view:
         directed_type: Is the Edge directed?
-        views: 
+        views:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -200,11 +200,11 @@ class SummariseGroupOverRanges(Operation):
     Gets summarised Elements for each group
 
     Args:
-        input: 
-        view: 
+        input:
+        view:
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
-        views: 
+        views:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -246,16 +246,16 @@ class AddGraph(Operation):
     Adds a new Graph to the federated store
 
     Args:
-        graph_id: 
-        schema: 
-        write_access_predicate: 
-        store_properties: 
-        parent_properties_id: 
-        read_access_predicate: 
-        graph_auths: 
-        is_public: 
-        parent_schema_ids: 
-        user_requesting_admin_usage: 
+        graph_id:
+        schema:
+        write_access_predicate:
+        store_properties:
+        parent_properties_id:
+        read_access_predicate:
+        graph_auths:
+        is_public:
+        parent_schema_ids:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -317,17 +317,17 @@ class AddGraphWithHooks(Operation):
     Adds a new Graph with hooks to the federated store
 
     Args:
-        schema: 
-        write_access_predicate: 
-        store_properties: 
-        parent_properties_id: 
-        read_access_predicate: 
-        graph_auths: 
-        is_public: 
-        parent_schema_ids: 
-        graph_id: 
-        hooks: 
-        user_requesting_admin_usage: 
+        schema:
+        write_access_predicate:
+        store_properties:
+        parent_properties_id:
+        read_access_predicate:
+        graph_auths:
+        is_public:
+        parent_schema_ids:
+        graph_id:
+        hooks:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -393,11 +393,11 @@ class ChangeGraphAccess(Operation):
     Changes the protection used for accessing graphs
 
     Args:
-        graph_id: 
-        owner_user_id: 
-        graph_auths: 
-        is_public: 
-        user_requesting_admin_usage: 
+        graph_id:
+        owner_user_id:
+        graph_auths:
+        is_public:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Boolean
@@ -439,9 +439,9 @@ class ChangeGraphId(Operation):
     Changes the Id of a graph
 
     Args:
-        graph_id: 
-        new_graph_id: 
-        user_requesting_admin_usage: 
+        graph_id:
+        new_graph_id:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Boolean
@@ -475,12 +475,12 @@ class FederatedOperation(Operation):
     Federates a payload operation across given graphs and merges the results with a given function.
 
     Args:
-        skip_failed_federated_execution: 
-        input: 
-        graph_ids: 
-        operation: 
-        merge_function: 
-        user_requesting_admin_usage: 
+        skip_failed_federated_execution:
+        input:
+        graph_ids:
+        operation:
+        merge_function:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -526,7 +526,7 @@ class GetAllGraphIds(Operation):
     Gets the ids of all available Graphs from a federated store
 
     Args:
-        user_requesting_admin_usage: 
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Iterable<java.lang.String>
@@ -552,8 +552,8 @@ class GetAllGraphInfo(Operation):
     Gets graph info of selected Graphs from the FederatedStore
 
     Args:
-        graph_ids: 
-        user_requesting_admin_usage: 
+        graph_ids:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.util.Map<java.lang.String,java.lang.Object>
@@ -583,8 +583,8 @@ class RemoveGraph(Operation):
     Removes a Graph from the federated store
 
     Args:
-        graph_id: 
-        user_requesting_admin_usage: 
+        graph_id:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Boolean
@@ -614,8 +614,8 @@ class RemoveGraphAndDeleteAllData(Operation):
     Used to tell a graph to delete all data, before being removed.
 
     Args:
-        graph_id: 
-        user_requesting_admin_usage: 
+        graph_id:
+        user_requesting_admin_usage:
         options: Additional map of options
     Returns:
         java.lang.Boolean
@@ -645,21 +645,21 @@ class AddElementsFromHdfs(Operation):
     Adds elements from hdfs
 
     Args:
-        job_initialiser: 
-        input_mapper_pairs: 
-        failure_path: 
-        output_path: 
-        splits_file_path: 
-        num_map_tasks: 
-        working_path: 
-        min_reduce_tasks: 
-        max_reduce_tasks: 
-        min_map_tasks: 
-        use_provided_splits: 
-        command_line_args: 
-        partitioner: 
-        max_map_tasks: 
-        validate: 
+        job_initialiser:
+        input_mapper_pairs:
+        failure_path:
+        output_path:
+        splits_file_path:
+        num_map_tasks:
+        working_path:
+        min_reduce_tasks:
+        max_reduce_tasks:
+        min_map_tasks:
+        use_provided_splits:
+        command_line_args:
+        partitioner:
+        max_map_tasks:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -741,22 +741,22 @@ class SampleDataForSplitPoints(Operation):
     Creates a splits file by sampling given data
 
     Args:
-        splits_file_path: 
-        job_initialiser: 
-        input_mapper_pairs: 
-        output_path: 
-        num_map_tasks: 
-        min_reduce_tasks: 
-        num_splits: 
-        max_reduce_tasks: 
-        min_map_tasks: 
-        use_provided_splits: 
-        command_line_args: 
-        compression_codec: 
-        partitioner: 
-        proportion_to_sample: 
-        max_map_tasks: 
-        validate: 
+        splits_file_path:
+        job_initialiser:
+        input_mapper_pairs:
+        output_path:
+        num_map_tasks:
+        min_reduce_tasks:
+        num_splits:
+        max_reduce_tasks:
+        min_map_tasks:
+        use_provided_splits:
+        command_line_args:
+        compression_codec:
+        partitioner:
+        proportion_to_sample:
+        max_map_tasks:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -842,7 +842,7 @@ class CountAllElementsDefaultView(Operation):
     Counts all elements
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.lang.Long
@@ -868,17 +868,17 @@ class AddNamedOperation(Operation):
     Adds a new named operation
 
     Args:
-        overwrite_flag: 
-        write_access_predicate: 
-        score: 
-        read_access_roles: 
-        read_access_predicate: 
-        description: 
-        operation_name: 
-        operation_chain: 
-        parameters: 
-        write_access_roles: 
-        labels: 
+        overwrite_flag:
+        write_access_predicate:
+        score:
+        read_access_roles:
+        read_access_predicate:
+        description:
+        operation_name:
+        operation_chain:
+        parameters:
+        write_access_roles:
+        labels:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -944,7 +944,7 @@ class DeleteNamedOperation(Operation):
     Deletes a named operation
 
     Args:
-        operation_name: 
+        operation_name:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -990,9 +990,9 @@ class NamedOperation(Operation):
     Runs a named operation
 
     Args:
-        operation_name: 
-        input: 
-        parameters: 
+        operation_name:
+        input:
+        parameters:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -1026,14 +1026,14 @@ class AddNamedView(Operation):
     Adds a new named view
 
     Args:
-        view: 
-        name: 
-        overwrite_flag: 
-        write_access_predicate: 
-        read_access_predicate: 
-        description: 
-        parameters: 
-        write_access_roles: 
+        view:
+        name:
+        overwrite_flag:
+        write_access_predicate:
+        read_access_predicate:
+        description:
+        parameters:
+        write_access_roles:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -1087,7 +1087,7 @@ class DeleteNamedView(Operation):
     Deletes a named view
 
     Args:
-        name: 
+        name:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -1133,7 +1133,7 @@ class OperationChain(Operation):
     A chain of operations where the results are passed between each operation
 
     Args:
-        operations: 
+        operations:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -1159,11 +1159,11 @@ class ExportToOtherAuthorisedGraph(Operation):
     Exports elements to another authorised Graph
 
     Args:
-        graph_id: 
-        input: 
-        parent_store_properties_id: 
-        parent_schema_ids: 
-        key: 
+        graph_id:
+        input:
+        parent_store_properties_id:
+        parent_schema_ids:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -1205,13 +1205,13 @@ class ExportToOtherGraph(Operation):
     Exports elements to another Graph
 
     Args:
-        graph_id: 
-        schema: 
-        input: 
-        parent_store_properties_id: 
-        store_properties: 
-        parent_schema_ids: 
-        key: 
+        graph_id:
+        schema:
+        input:
+        parent_store_properties_id:
+        store_properties:
+        parent_schema_ids:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -1261,7 +1261,7 @@ class Count(Operation):
     Counts the number of items
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.lang.Long
@@ -1287,8 +1287,8 @@ class CountGroups(Operation):
     Counts the different element groups
 
     Args:
-        input: 
-        limit: 
+        input:
+        limit:
         options: Additional map of options
     Returns:
         uk.gov.gchq.gaffer.data.GroupCounts
@@ -1318,7 +1318,7 @@ class DiscardOutput(Operation):
     Discards the results from the previous operation
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -1344,8 +1344,8 @@ class ForEach(Operation):
     Runs supplied operation on Iterable of inputs
 
     Args:
-        input: 
-        operation: 
+        input:
+        operation:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -1375,8 +1375,8 @@ class GenerateSplitPointsFromSample(Operation):
     Generates split points from the supplied Iterable
 
     Args:
-        input: 
-        num_splits: 
+        input:
+        num_splits:
         options: Additional map of options
     Returns:
         java.util.List<T>
@@ -1406,7 +1406,7 @@ class GetVariable(Operation):
     Gets a variable from the Context variable map
 
     Args:
-        variable_name: 
+        variable_name:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -1432,7 +1432,7 @@ class GetVariables(Operation):
     Gets all variables from the Context variable map
 
     Args:
-        variable_names: 
+        variable_names:
         options: Additional map of options
     Returns:
         java.util.Map<java.lang.String,java.lang.Object>
@@ -1458,11 +1458,11 @@ class GetWalks(Operation):
     Walks around the Graph, returning the full walks taken
 
     Args:
-        input: 
-        operations: 
-        include_partial: 
-        conditional: 
-        results_limit: 
+        input:
+        operations:
+        include_partial:
+        conditional:
+        results_limit:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.graph.Walk>
@@ -1504,12 +1504,12 @@ class If(Operation):
     Conditionally runs an operation or an alternative operation
 
     Args:
-        otherwise: 
-        input: 
-        condition: 
-        conditional: 
-        multi_input_wrapper: 
-        then: 
+        otherwise:
+        input:
+        condition:
+        conditional:
+        multi_input_wrapper:
+        then:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -1555,9 +1555,9 @@ class Limit(Operation):
     Limits the number of items
 
     Args:
-        result_limit: 
-        input: 
-        truncate: 
+        result_limit:
+        input:
+        truncate:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -1591,9 +1591,9 @@ class Map(Operation):
     Maps an input to an output using provided functions
 
     Args:
-        functions: 
-        input: 
-        function: 
+        functions:
+        input:
+        function:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -1627,9 +1627,9 @@ class Reduce(Operation):
     Reduces an input to an output with a single value using provided function
 
     Args:
-        aggregate_function: 
-        input: 
-        identity: 
+        aggregate_function:
+        input:
+        identity:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -1663,9 +1663,9 @@ class SampleElementsForSplitPoints(Operation):
     Samples an iterable of elements and generates split points
 
     Args:
-        input: 
-        num_splits: 
-        proportion_to_sample: 
+        input:
+        num_splits:
+        proportion_to_sample:
         options: Additional map of options
     Returns:
         java.util.List<T>
@@ -1725,8 +1725,8 @@ class SetVariable(Operation):
     Sets a variable in the Context
 
     Args:
-        input: 
-        variable_name: 
+        input:
+        variable_name:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -1756,7 +1756,7 @@ class SplitStoreFromFile(Operation):
     Splits a store based on a file of split points
 
     Args:
-        input_path: 
+        input_path:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -1782,7 +1782,7 @@ class SplitStoreFromIterable(Operation):
     Splits a store based on an iterable of split points
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -1808,9 +1808,9 @@ class Validate(Operation):
     Validates elements based on the schema
 
     Args:
-        input: 
-        skip_invalid_elements: 
-        validate: 
+        input:
+        skip_invalid_elements:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -1870,12 +1870,12 @@ class While(Operation):
     Repeatedly executes an operation while a condition is met
 
     Args:
-        input: 
-        condition: 
-        conditional: 
-        max_repeats: 
-        multi_input_wrapper: 
-        operation: 
+        input:
+        condition:
+        conditional:
+        max_repeats:
+        multi_input_wrapper:
+        operation:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -1921,9 +1921,9 @@ class AddElements(Operation):
     Adds elements
 
     Args:
-        input: 
-        skip_invalid_elements: 
-        validate: 
+        input:
+        skip_invalid_elements:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -1957,11 +1957,11 @@ class AddElementsFromFile(Operation):
     Adds elements from a file
 
     Args:
-        element_generator: 
-        filename: 
-        parallelism: 
-        skip_invalid_elements: 
-        validate: 
+        element_generator:
+        filename:
+        parallelism:
+        skip_invalid_elements:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -2003,14 +2003,14 @@ class AddElementsFromKafka(Operation):
     Adds elements from Kafka
 
     Args:
-        element_generator: 
-        bootstrap_servers: 
-        group_id: 
-        topic: 
-        parallelism: 
-        consume_as: 
-        skip_invalid_elements: 
-        validate: 
+        element_generator:
+        bootstrap_servers:
+        group_id:
+        topic:
+        parallelism:
+        consume_as:
+        skip_invalid_elements:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -2064,13 +2064,13 @@ class AddElementsFromSocket(Operation):
     Adds elements from a socket
 
     Args:
-        element_generator: 
-        hostname: 
-        port: 
-        delimiter: 
-        parallelism: 
-        skip_invalid_elements: 
-        validate: 
+        element_generator:
+        hostname:
+        port:
+        delimiter:
+        parallelism:
+        skip_invalid_elements:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -2120,13 +2120,13 @@ class CsvToElements(Operation):
     Adds elements from a openCypher CSV file
 
     Args:
-        input: 
-        trim: 
-        delimiter: 
-        null_string: 
-        skip_invalid_elements: 
-        csv_format: 
-        validate: 
+        input:
+        trim:
+        delimiter:
+        null_string:
+        skip_invalid_elements:
+        csv_format:
+        validate:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2176,8 +2176,8 @@ class Max(Operation):
     Extracts the maximum element based on provided Comparators
 
     Args:
-        comparators: 
-        input: 
+        comparators:
+        input:
         options: Additional map of options
     Returns:
         uk.gov.gchq.gaffer.data.element.Element
@@ -2207,8 +2207,8 @@ class Min(Operation):
     Extracts the minimum element based on provided Comparators
 
     Args:
-        comparators: 
-        input: 
+        comparators:
+        input:
         options: Additional map of options
     Returns:
         uk.gov.gchq.gaffer.data.element.Element
@@ -2238,10 +2238,10 @@ class Sort(Operation):
     Sorts elements based on provided Comparators and can be used to extract the top 'n' elements
 
     Args:
-        comparators: 
-        input: 
-        result_limit: 
-        deduplicate: 
+        comparators:
+        input:
+        result_limit:
+        deduplicate:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2279,7 +2279,7 @@ class GetExports(Operation):
     Fetches multiple exports
 
     Args:
-        get_exports: 
+        get_exports:
         options: Additional map of options
     Returns:
         java.util.Map<java.lang.String,java.util.Set<java.lang.Object>>
@@ -2305,9 +2305,9 @@ class ExportToLocalFile(Operation):
     Exports elements to a local file
 
     Args:
-        file_path: 
-        input: 
-        key: 
+        file_path:
+        input:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Iterable<java.lang.String>
@@ -2341,9 +2341,9 @@ class ImportFromLocalFile(Operation):
     Fetches data from a local file
 
     Args:
-        file_path: 
-        job_id: 
-        key: 
+        file_path:
+        job_id:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Iterable<java.lang.String>
@@ -2377,9 +2377,9 @@ class ExportToGafferResultCache(Operation):
     Exports to a cache backed by a Gaffer graph
 
     Args:
-        input: 
-        op_auths: 
-        key: 
+        input:
+        op_auths:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -2413,8 +2413,8 @@ class GetGafferResultCacheExport(Operation):
     Fetches data from a Gaffer result cache
 
     Args:
-        job_id: 
-        key: 
+        job_id:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -2444,8 +2444,8 @@ class ExportToSet(Operation):
     Exports results to a Set
 
     Args:
-        input: 
-        key: 
+        input:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Object
@@ -2475,10 +2475,10 @@ class GetSetExport(Operation):
     Fetches data from a Set cache
 
     Args:
-        job_id: 
-        start: 
-        end: 
-        key: 
+        job_id:
+        start:
+        end:
+        key:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -2516,9 +2516,9 @@ class Aggregate(Operation):
     Aggregates elements
 
     Args:
-        input: 
-        entities: 
-        edges: 
+        input:
+        entities:
+        edges:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2552,12 +2552,12 @@ class Filter(Operation):
     Filters elements
 
     Args:
-        input: 
-        global_edges: 
-        global_entities: 
-        entities: 
-        edges: 
-        global_elements: 
+        input:
+        global_edges:
+        global_entities:
+        entities:
+        edges:
+        global_elements:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2603,9 +2603,9 @@ class Transform(Operation):
     Transforms elements
 
     Args:
-        input: 
-        entities: 
-        edges: 
+        input:
+        entities:
+        edges:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2639,8 +2639,8 @@ class GenerateElements(Operation):
     Generates elements from objects using provided generators
 
     Args:
-        element_generator: 
-        input: 
+        element_generator:
+        input:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2670,8 +2670,8 @@ class GenerateObjects(Operation):
     Generates objects from elements using provided generators
 
     Args:
-        element_generator: 
-        input: 
+        element_generator:
+        input:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -2701,11 +2701,11 @@ class GetAdjacentIds(Operation):
     Performs a single hop down related edges
 
     Args:
-        input: 
-        view: 
+        input:
+        view:
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
-        views: 
+        views:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.id.EntityId>
@@ -2747,9 +2747,9 @@ class GetAllElements(Operation):
     Gets all elements compatible with a provided View
 
     Args:
-        view: 
+        view:
         directed_type: Is the Edge directed?
-        views: 
+        views:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2783,11 +2783,11 @@ class GetElements(Operation):
     Gets elements related to provided seeds
 
     Args:
-        input: 
-        view: 
+        input:
+        view:
         include_incoming_out_going: Should the edges point towards, or away from your seeds
         directed_type: Is the Edge directed?
-        views: 
+        views:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
@@ -2829,7 +2829,7 @@ class GetFromEndpoint(Operation):
     Gets data from an endpoint
 
     Args:
-        endpoint: 
+        endpoint:
         options: Additional map of options
     Returns:
         java.lang.String
@@ -2855,7 +2855,7 @@ class CancelScheduledJob(Operation):
     Cancels a scheduled job
 
     Args:
-        job_id: 
+        job_id:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -2901,7 +2901,7 @@ class GetJobDetails(Operation):
     Gets the details of a single job
 
     Args:
-        job_id: 
+        job_id:
         options: Additional map of options
     Returns:
         uk.gov.gchq.gaffer.jobtracker.JobDetail
@@ -2927,7 +2927,7 @@ class GetJobResults(Operation):
     Gets the results of a job
 
     Args:
-        job_id: 
+        job_id:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -2953,13 +2953,13 @@ class Join(Operation):
     Joins two iterables based on a join type
 
     Args:
-        flatten: 
-        input: 
-        join_type: 
-        match_key: 
-        collection_limit: 
-        match_method: 
-        operation: 
+        flatten:
+        input:
+        join_type:
+        match_key:
+        collection_limit:
+        match_method:
+        operation:
         options: Additional map of options
     Returns:
         java.lang.Iterable<?>
@@ -3009,7 +3009,7 @@ class ToArray(Operation):
     Converts an Iterable to an Array
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.lang.Object[]
@@ -3035,10 +3035,10 @@ class ToCsv(Operation):
     Converts elements to CSV Strings
 
     Args:
-        input: 
+        input:
         element_generator: Generates a CSV string for each element
-        include_header: 
-        csv_format: 
+        include_header:
+        csv_format:
         options: Additional map of options
     Returns:
         java.lang.Iterable<java.lang.String>
@@ -3076,7 +3076,7 @@ class ToEntitySeeds(Operation):
     Converts an objects into EntitySeeds
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.lang.Iterable<uk.gov.gchq.gaffer.operation.data.EntitySeed>
@@ -3102,7 +3102,7 @@ class ToList(Operation):
     Converts an Iterable to a List
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.util.List<T>
@@ -3129,7 +3129,7 @@ class ToMap(Operation):
 
     Args:
         element_generator: Generates a Map for each element
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.lang.Iterable<java.util.Map<java.lang.String,java.lang.Object>>
@@ -3159,8 +3159,8 @@ class ToOpenCypherCsv(Operation):
     Converts elements to CSV Strings
 
     Args:
-        input: 
-        neo4j_format: 
+        input:
+        neo4j_format:
         options: Additional map of options
     Returns:
         java.lang.Iterable<java.lang.String>
@@ -3190,7 +3190,7 @@ class ToSet(Operation):
     Converts an Iterable to a Set
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.util.Set<T>
@@ -3216,7 +3216,7 @@ class ToSingletonList(Operation):
     Converts a single input of type T to a List
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.util.List<T>
@@ -3242,7 +3242,7 @@ class ToStream(Operation):
     Converts an Iterable to a Stream
 
     Args:
-        input: 
+        input:
         options: Additional map of options
     Returns:
         java.util.stream.Stream<T>
@@ -3268,7 +3268,7 @@ class ToVertices(Operation):
     Converts element ids into vertices
 
     Args:
-        input: 
+        input:
         use_matched_vertex: Choose whether to extract vertices based on how the seeds match the edges
         edge_vertices: Choose whether to extract the edge vertices
         options: Additional map of options
@@ -3364,7 +3364,7 @@ class GetSchema(Operation):
     Gets the Schema of a Graph
 
     Args:
-        compact: 
+        compact:
         options: Additional map of options
     Returns:
         uk.gov.gchq.gaffer.store.schema.Schema
@@ -3390,7 +3390,7 @@ class GetTraits(Operation):
     An Operation used for getting traits from the Store
 
     Args:
-        current_traits: 
+        current_traits:
         options: Additional map of options
     Returns:
         java.util.Set<uk.gov.gchq.gaffer.store.StoreTrait>
@@ -3416,7 +3416,7 @@ class HasTrait(Operation):
     An Operation that will see if a Store has a given trait
 
     Args:
-        current_traits: 
+        current_traits:
         trait: The features of the Gaffer store - i.e does it support query aggregation?
         options: Additional map of options
     Returns:
@@ -3447,9 +3447,9 @@ class AddSchemaToLibrary(Operation):
     Adds a Schema to the GraphLibrary
 
     Args:
-        schema: 
-        id: 
-        parent_schema_ids: 
+        schema:
+        id:
+        parent_schema_ids:
         options: Additional map of options
     Returns:
         java.lang.Void
@@ -3483,9 +3483,9 @@ class AddStorePropertiesToLibrary(Operation):
     Adds StoreProperties to the GraphLibrary
 
     Args:
-        store_properties: 
-        id: 
-        parent_properties_id: 
+        store_properties:
+        id:
+        parent_properties_id:
         options: Additional map of options
     Returns:
         java.lang.Void

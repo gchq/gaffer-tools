@@ -30,6 +30,7 @@ dicts = "java.util.Map", "java.util.LinkedHashMap", "java.util.Properties", "uk.
 strings = "java.lang.String", "char"
 ints = "java.lang.Integer", "java.lang.Long", "int"
 
+
 def parse_java_type_to_string(java_type: str) -> str:
     python_type = parse_java_type(java_type)
     if isinstance(python_type, type):
@@ -39,9 +40,10 @@ def parse_java_type_to_string(java_type: str) -> str:
     else:
         type_name = str(python_type)
 
-    type_name = type_name.replace("gafferpy.gaffer_operations.","")
+    type_name = type_name.replace("gafferpy.gaffer_operations.", "")
     type_name = type_name.replace("gafferpy.generated_api.operations.", "")
     return type_name
+
 
 def parse_java_type(java_type: str) -> type:
     if "[]" in java_type:
@@ -93,6 +95,7 @@ def parse_java_type(java_type: str) -> type:
     if java_type in JsonConverter.CLASS_MAP:
         return JsonConverter.CLASS_MAP[java_type]
     return Any
+
 
 def long(value):
     return {"java.lang.Long": value}
