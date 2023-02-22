@@ -289,9 +289,7 @@ g.GetStoreTraits()</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<p>gc.execute_get(
-operation = g.GetOperations()
-)</p>
+<p>gc.execute_get(operation = g.GetOperations())</p>
 </dd></dl>
 
 <dl class="py method">
@@ -322,30 +320,15 @@ operation = g.GetOperations()
 <span class="sig-name descname"><span class="pre">is_operation_supported</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gafferpy.gaffer_connector.GafferConnector.is_operation_supported" title="Permalink to this definition"></a></dt>
 <dd><p>This method queries the Gaffer API to provide details about operations
 Returns a JSON array containing details about the operation.</p>
-<dl>
-<dt>The operation parameter expects an input of the form:</dt><dd><dl class="simple">
-<dt>g.IsOperationSupported(</dt><dd><p>operation=’uk.gov.gchq.gaffer.operation.impl.get.GetElements’</p>
+<dl class="simple">
+<dt>The operation parameter expects an input of the form:</dt><dd><p>g.IsOperationSupported(operation=’uk.gov.gchq.gaffer.operation.impl.get.GetElements’)</p>
+</dd>
+<dt>or you can use:</dt><dd><p>g.IsOperationSupported(operation=g.GetElements().CLASS)</p>
 </dd>
 </dl>
-<p>)</p>
-</dd>
-<dt>or you can use:</dt><dd><dl class="simple">
-<dt>g.IsOperationSupported(</dt><dd><p>operation=g.GetElements().CLASS</p>
-</dd>
-</dl>
-<p>)</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<dl>
-<dt>gc.is_operation_supported(</dt><dd><dl class="simple">
-<dt>operation = g.IsOperationSupported(</dt><dd><p>operation=’uk.gov.gchq.gaffer.operation.impl.get.GetElements’</p>
-</dd>
-</dl>
-<p>)</p>
-</dd>
-</dl>
-<p>)</p>
+<p class="rubric">Examples</p>
+<p>gc.is_operation_supported(g.IsOperationSupported(‘uk.gov.gchq.gaffer.operation.impl.get.GetElements’))
+gc.is_operation_supported(g.GetElements())</p>
 </dd></dl>
 
 </dd></dl>
@@ -1085,7 +1068,7 @@ python object.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="gafferpy.gaffer_operations.GetWalks">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gafferpy.gaffer_operations.</span></span><span class="sig-name descname"><span class="pre">GetWalks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_partial</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conditional</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#gafferpy.gaffer_operations.Conditional" title="gafferpy.gaffer_operations.Conditional"><span class="pre">gafferpy.gaffer_operations.Conditional</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gafferpy.gaffer_operations.GetWalks" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gafferpy.gaffer_operations.</span></span><span class="sig-name descname"><span class="pre">GetWalks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_partial</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conditional</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#gafferpy.gaffer_operations.Conditional" title="gafferpy.gaffer_operations.Conditional"><span class="pre">gafferpy.gaffer_operations.Conditional</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gafferpy.gaffer_operations.GetWalks" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gafferpy.gaffer_operations.GetOperation" title="gafferpy.gaffer_operations.GetOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">gafferpy.gaffer_operations.GetOperation</span></code></a>, <a class="reference internal" href="gafferpy.generated_api.html#gafferpy.generated_api.operations.GetWalks" title="gafferpy.generated_api.operations.GetWalks"><code class="xref py py-class docutils literal notranslate"><span class="pre">gafferpy.generated_api.operations.GetWalks</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="gafferpy.gaffer_operations.GetWalks.to_json">

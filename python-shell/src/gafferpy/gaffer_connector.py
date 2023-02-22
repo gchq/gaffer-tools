@@ -118,9 +118,7 @@ class GafferConnector:
             g.GetStoreTraits()
 
         Example:
-            gc.execute_get(
-            operation = g.GetOperations()
-            )
+            gc.execute_get(operation = g.GetOperations())
 
         """
         target = operation.get_url()
@@ -133,22 +131,14 @@ class GafferConnector:
         Returns a JSON array containing details about the operation.
 
         The operation parameter expects an input of the form:
-            g.IsOperationSupported(
-                operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
-            )
+            g.IsOperationSupported(operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements')
 
         or you can use:
-            g.IsOperationSupported(
-                operation=g.GetElements().CLASS
-            )
+            g.IsOperationSupported(operation=g.GetElements().CLASS)
 
-        Example:
-            gc.is_operation_supported(
-                operation = g.IsOperationSupported(
-                    operation='uk.gov.gchq.gaffer.operation.impl.get.GetElements'
-                )
-            )
-
+        Examples:
+            gc.is_operation_supported(g.IsOperationSupported('uk.gov.gchq.gaffer.operation.impl.get.GetElements'))
+            gc.is_operation_supported(g.GetElements())
         """
 
         if isinstance(operation, IsOperationSupported):
