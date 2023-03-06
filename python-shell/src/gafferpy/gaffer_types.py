@@ -134,5 +134,5 @@ def tree_set(set: Set[Any]):
 
 
 def hyper_log_log_plus(offers: List[Any], p: int = 5, sp: int = 5):
-    return {"com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {"hyperLogLogPlus":
-            {"p": p, "sp": sp, "offers": offers}}}
+    return {"com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
+        "hyperLogLogPlus": {"p": p, "sp": sp, "offers": offers}}}
