@@ -97,33 +97,42 @@ def parse_java_type(java_type: str) -> type:
     return Any
 
 
-def long(value):
+def long(value: int):
     return {"java.lang.Long": value}
 
 
-def date(value):
+def date(value: int):
     return {"java.util.Date": value}
 
 
-def freq_map(map_value):
+def freq_map(map_value: Dict[Any, int]):
     return {"uk.gov.gchq.gaffer.types.FreqMap": map_value}
 
 
-def type_value(type=None, value=None):
+def type_value(type: Any = None, value: Any = None):
     map = {}
     if type is not None:
-        map['type'] = type
+        map["type"] = type
     if value is not None:
-        map['value'] = value
+        map["value"] = value
     return {"uk.gov.gchq.gaffer.types.TypeSubTypeValue": map}
 
 
-def type_subtype_value(type=None, subType=None, value=None):
+def type_subtype_value(type: Any = None, subType: Any = None, value: Any = None):
     map = {}
     if type is not None:
-        map['type'] = type
+        map["type"] = type
     if subType is not None:
-        map['subType'] = subType
+        map["subType"] = subType
     if value is not None:
-        map['value'] = value
+        map["value"] = value
     return {"uk.gov.gchq.gaffer.types.TypeSubTypeValue": map}
+
+
+def tree_set(set: Set):
+    return {"java.util.TreeSet": set}
+
+
+def hyper_log_log_plus(offers: List[Any], p: int = 5, sp: int = 5):
+    return {"com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {"hyperLogLogPlus":
+            {"p": p, "sp": sp, "offers": offers}}}
