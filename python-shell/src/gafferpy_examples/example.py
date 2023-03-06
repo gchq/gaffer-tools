@@ -44,6 +44,7 @@ def run_with_connector(gc):
     get_adj_seeds(gc)
     get_all_elements(gc)
     get_walks(gc)
+    add_cardinality_entity(gc)
     generate_elements(gc)
     generate_domain_objs(gc)
     generate_domain_objects_chain(gc)
@@ -347,6 +348,28 @@ def get_walks(gc):
     print(
         'Walks from M32 traversing down RoadHasJunction then JunctionLocatedAt')
     print(walks)
+    print()
+
+
+def add_cardinality_entity(gc):
+    # Will manually add a cardinality entity
+    # using the HyperLogLogPlus type
+    gc.execute_operation(
+        g.AddElements(
+            input=[
+                g.Entity(
+                    group='Cardinality',
+                    vertex='M1:1',
+                    properties={
+                        'hllp': g.hyper_log_log_plus(['M1']),
+                        'count': g.long(60),
+                        'edgeGroup': g.tree_set(['RoadHasJunction'])
+                    }
+                )
+            ]
+        )
+    )
+    print('Cardinality entity has been added')
     print()
 
 
