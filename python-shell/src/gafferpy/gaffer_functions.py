@@ -134,6 +134,7 @@ def load_function_json_map():
         if hasattr(class_obj, 'CLASS'):
             JsonConverter.GENERIC_JSON_CONVERTERS[class_obj.CLASS] = \
                 lambda obj, class_obj=class_obj: class_obj(**obj)
+            JsonConverter.CLASS_MAP[class_obj.CLASS] = class_obj
     JsonConverter.CUSTOM_JSON_CONVERTERS[
         FunctionContext.CLASS] = function_context_converter
     JsonConverter.CUSTOM_JSON_CONVERTERS[Function.CLASS] = function_converter

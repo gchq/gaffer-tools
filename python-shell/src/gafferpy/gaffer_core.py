@@ -403,6 +403,7 @@ class Edge(Element):
 class JsonConverter:
     GENERIC_JSON_CONVERTERS = {}
     CUSTOM_JSON_CONVERTERS = {}
+    CLASS_MAP = {}
 
     @staticmethod
     def to_snake_case(name):
@@ -527,6 +528,7 @@ def load_core_json_map():
         if hasattr(class_obj, 'CLASS'):
             JsonConverter.GENERIC_JSON_CONVERTERS[class_obj.CLASS] = \
                 lambda obj, class_obj=class_obj: class_obj(**obj)
+            JsonConverter.CLASS_MAP[class_obj.CLASS] = class_obj
 
 
 load_core_json_map()
