@@ -129,7 +129,7 @@ def type_subtype_value(type: Any = None, subType: Any = None, value: Any = None)
     return {"uk.gov.gchq.gaffer.types.TypeSubTypeValue": map}
 
 
-def tree_set(set: Set):
+def tree_set(set: Set[Any]):
     return {"java.util.TreeSet": set}
 
 
