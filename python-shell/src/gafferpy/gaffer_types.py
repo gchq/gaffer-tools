@@ -97,19 +97,19 @@ def parse_java_type(java_type: str) -> type:
     return Any
 
 
-def long(value: int):
+def long(value: int) -> dict[str, int]:
     return {"java.lang.Long": value}
 
 
-def date(value: int):
+def date(value: int) -> dict[str, int]:
     return {"java.util.Date": value}
 
 
-def freq_map(map_value: Dict[Any, int]):
+def freq_map(map_value: Dict[Any, int]) -> dict[str, Dict[Any, int]]:
     return {"uk.gov.gchq.gaffer.types.FreqMap": map_value}
 
 
-def type_value(type: Any = None, value: Any = None):
+def type_value(type: Any = None, value: Any = None) -> dict[str, Dict[str, Any]]:
     map = {}
     if type is not None:
         map["type"] = type
@@ -118,7 +118,7 @@ def type_value(type: Any = None, value: Any = None):
     return {"uk.gov.gchq.gaffer.types.TypeSubTypeValue": map}
 
 
-def type_subtype_value(type: Any = None, subType: Any = None, value: Any = None):
+def type_subtype_value(type: Any = None, subType: Any = None, value: Any = None) -> dict[str, Dict[str, Any]]:
     map = {}
     if type is not None:
         map["type"] = type
@@ -129,10 +129,10 @@ def type_subtype_value(type: Any = None, subType: Any = None, value: Any = None)
     return {"uk.gov.gchq.gaffer.types.TypeSubTypeValue": map}
 
 
-def tree_set(set: Set[Any]):
+def tree_set(set: Set[Any]) -> dict[str, Set[Any]]:
     return {"java.util.TreeSet": set}
 
 
-def hyper_log_log_plus(offers: List[Any], p: int = 5, sp: int = 5):
+def hyper_log_log_plus(offers: List[Any], p: int = 5, sp: int = 5) -> dict[str, dict[str, dict[str, Any]]]:
     return {"com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
         "hyperLogLogPlus": {"p": p, "sp": sp, "offers": offers}}}
