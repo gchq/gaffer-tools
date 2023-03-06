@@ -118,7 +118,8 @@ def type_value(type: Any = None, value: Any = None) -> dict[str, Dict[str, Any]]
     return {"uk.gov.gchq.gaffer.types.TypeSubTypeValue": map}
 
 
-def type_subtype_value(type: Any = None, subType: Any = None, value: Any = None) -> dict[str, Dict[str, Any]]:
+def type_subtype_value(type: Any = None, subType: Any = None,
+                       value: Any = None) -> dict[str, Dict[str, Any]]:
     map = {}
     if type is not None:
         map["type"] = type
@@ -133,6 +134,7 @@ def tree_set(set: Set[Any]) -> dict[str, Set[Any]]:
     return {"java.util.TreeSet": set}
 
 
-def hyper_log_log_plus(offers: List[Any], p: int = 5, sp: int = 5) -> dict[str, dict[str, dict[str, Any]]]:
+def hyper_log_log_plus(offers: List[Any], p: int = 5,
+                       sp: int = 5) -> dict[str, dict[str, dict[str, Any]]]:
     return {"com.clearspring.analytics.stream.cardinality.HyperLogLogPlus": {
         "hyperLogLogPlus": {"p": p, "sp": sp, "offers": offers}}}
