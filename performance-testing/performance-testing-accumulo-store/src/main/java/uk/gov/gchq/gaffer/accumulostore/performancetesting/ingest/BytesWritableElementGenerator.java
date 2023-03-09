@@ -27,7 +27,7 @@ import java.util.stream.StreamSupport;
 
 public class BytesWritableElementGenerator implements ElementGenerator<BytesWritable> {
 
-    private ToBytesSerialiser<Element> elementSerialisation;
+    private final ToBytesSerialiser<Element> elementSerialisation;
 
     public BytesWritableElementGenerator(final ToBytesSerialiser<Element> elementSerialisation) {
         this.elementSerialisation = elementSerialisation;

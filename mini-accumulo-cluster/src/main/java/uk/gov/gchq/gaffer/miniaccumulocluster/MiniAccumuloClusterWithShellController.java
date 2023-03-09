@@ -34,7 +34,7 @@ public class MiniAccumuloClusterWithShellController extends MiniAccumuloClusterC
         super();
     }
 
-    public MiniAccumuloClusterWithShellController(final String[] args) {
+    public MiniAccumuloClusterWithShellController(final String... args) {
         super(args);
     }
 
@@ -49,10 +49,9 @@ public class MiniAccumuloClusterWithShellController extends MiniAccumuloClusterC
             start();
         }
 
-        final String[] shellArgs = new String[]{
-                "-u", "root",
-                "-p", cluster.getConfig().getRootPassword(),
-                "-z", cluster.getInstanceName(), cluster.getZooKeepers()};
+        final String[] shellArgs = {"-u", "root",
+                                    "-p", cluster.getConfig().getRootPassword(),
+                                    "-z", cluster.getInstanceName(), cluster.getZooKeepers()};
 
         try {
             shell = new Shell();
@@ -61,7 +60,7 @@ public class MiniAccumuloClusterWithShellController extends MiniAccumuloClusterC
             }
             shell.start();
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to start shell");
+            throw new RuntimeException("Failed to start shell", e);
         }
     }
 

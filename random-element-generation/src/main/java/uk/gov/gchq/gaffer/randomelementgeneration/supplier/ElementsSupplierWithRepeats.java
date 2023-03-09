@@ -29,7 +29,7 @@ import java.util.function.Supplier;
  * previously been output.
  */
 public class ElementsSupplierWithRepeats extends ElementsSupplier {
-    private Iterator<Element> elementIterator;
+    private final Iterator<Element> elementIterator;
 
     public ElementsSupplierWithRepeats(final Supplier<Set<Element>> elementSupplier,
                                        final double repeatProb,
@@ -48,9 +48,9 @@ public class ElementsSupplierWithRepeats extends ElementsSupplier {
 
     protected static class ElementIteratorWithRepeats implements Iterator<Element> {
         private final Random random = new Random();
-        private Iterator<Element> elementIterator;
-        private double repeatProb;
-        private Cache<Element> cache;
+        private final Iterator<Element> elementIterator;
+        private final double repeatProb;
+        private final Cache<Element> cache;
 
         ElementIteratorWithRepeats(final Iterator<Element> elementIterator,
                                    final double repeatProb,

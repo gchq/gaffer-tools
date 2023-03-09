@@ -46,6 +46,6 @@ public class ElementIngestTestProperties extends TestProperties {
         if (numEdges <= 0L) {
             throw new IllegalArgumentException("The number of edges must be greater than 0.");
         }
-        setProperty(NUMBER_OF_ELEMENTS, "" + numEdges);
+        setProperty(NUMBER_OF_ELEMENTS, String.valueOf(numEdges));
     }
 }

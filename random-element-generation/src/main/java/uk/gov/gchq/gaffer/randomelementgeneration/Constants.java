@@ -27,7 +27,7 @@ public final class Constants {
      * <a href="http://www.graph500.org/specifications#sec-3_3">the Graph500 specifications</a>.
      */
     @SuppressFBWarnings("MS_MUTABLE_ARRAY")
-    public static final double[] RMAT_PROBABILITIES = new double[]{0.57, 0.19, 0.19, 1.0 - 0.57 - 0.19 - 0.19};
+    public static final double[] RMAT_PROBABILITIES = {0.57, 0.19, 0.19, 1.0 - 0.57 - 0.19 - 0.19};
 
     private Constants() {
 

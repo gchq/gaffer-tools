@@ -45,9 +45,9 @@ public class PreferentialAttachmentCache<T> implements Cache<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PreferentialAttachmentCache.class);
 
     private final Random random = new Random();
-    private TreeMap<Long, Set<T>> mapFreqToItems;
-    private TreeMap<T, Long> itemsToFreq;
-    private int maxSize;
+    private final TreeMap<Long, Set<T>> mapFreqToItems;
+    private final TreeMap<T, Long> itemsToFreq;
+    private final int maxSize;
 
     public PreferentialAttachmentCache(final int maxSize) {
         this.mapFreqToItems = new TreeMap<>(Collections.reverseOrder());

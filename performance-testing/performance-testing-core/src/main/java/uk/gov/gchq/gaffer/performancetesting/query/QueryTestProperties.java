@@ -38,10 +38,10 @@ public class QueryTestProperties extends TestProperties {
     }
 
     public long getNumSeeds() {
-        return Long.parseLong(getProperty(NUM_SEEDS, "" + 1000L));
+        return Long.parseLong(getProperty(NUM_SEEDS, String.valueOf(1000L)));
     }
 
-    public void setNumSeeds(final long numSeeds) {
-        setProperty(NUM_SEEDS, "" + numSeeds);
+    public void setNumSeeds(final Long numSeeds) {
+        setProperty(NUM_SEEDS, numSeeds.toString());
     }
 }

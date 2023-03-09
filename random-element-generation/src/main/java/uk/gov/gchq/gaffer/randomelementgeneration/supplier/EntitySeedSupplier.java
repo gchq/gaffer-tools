@@ -21,11 +21,9 @@ import java.util.Random;
 
 public class EntitySeedSupplier implements ElementSeedSupplier<EntitySeed> {
     protected final Random random = new Random();
-    private final long maxNodeId;
     private final int numBits;
 
     public EntitySeedSupplier(final long maxNodeId) {
-        this.maxNodeId = maxNodeId;
         this.numBits = (int) (Math.log(maxNodeId) / Math.log(2));
     }
 

@@ -45,7 +45,7 @@ public class CloudWatchMetricsListener implements MetricsListener {
 
     private AmazonCloudWatch cloudwatch = null;
     private String namespace = null;
-    private List<Dimension> dimensions = new ArrayList<>();
+    private final List<Dimension> dimensions = new ArrayList<>();
 
     @Override
     public void initialise(final Properties properties) {
@@ -86,7 +86,7 @@ public class CloudWatchMetricsListener implements MetricsListener {
                 cloudwatchMetrics.add(
                     new MetricDatum()
                         .withMetricName(name)
-                        .withValue((double) value)
+                        .withValue((Double) value)
                         .withUnit(StandardUnit.CountSecond)
                         .withTimestamp(now)
                         .withDimensions(this.dimensions)

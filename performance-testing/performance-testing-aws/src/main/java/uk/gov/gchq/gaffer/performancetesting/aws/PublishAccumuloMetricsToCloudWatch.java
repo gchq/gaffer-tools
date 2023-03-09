@@ -24,6 +24,7 @@ import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataResult;
 import com.amazonaws.services.cloudwatch.model.StandardUnit;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.accumulo.core.client.Accumulo;
 import org.apache.accumulo.core.client.AccumuloClient;
 import org.apache.accumulo.core.clientImpl.MasterClient;
@@ -50,13 +51,14 @@ import java.util.Map;
 /*
  * This utility periodically collects metrics from an Accumulo Master and publishes them to AWS CloudWatch
  */
+@SuppressWarnings("UnusedPrivateField")
 public class PublishAccumuloMetricsToCloudWatch implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishAccumuloMetricsToCloudWatch.class);
 
     private final String instanceName;
     private final String zookeepers;
-    private int interval = 60;
+    private final int interval;
 
     private AccumuloClient instance;
     private ServerContext context;
@@ -68,12 +70,12 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     private Map<Pair<String, List<Dimension>>, Double> previousMetrics = null;
 
     public PublishAccumuloMetricsToCloudWatch(final String instanceName, final String zookeepers) {
-        this.instanceName = instanceName;
-        this.zookeepers = zookeepers;
+        this(instanceName, zookeepers, 60);
     }
 
     public PublishAccumuloMetricsToCloudWatch(final String instanceName, final String zookeepers, final int interval) {
-        this(instanceName, zookeepers);
+        this.instanceName = instanceName;
+        this.zookeepers = zookeepers;
         this.interval = interval;
     }
 
@@ -94,6 +96,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
         }
     }
 
+    @SuppressFBWarnings(value = "GC_UNRELATED_TYPES", justification = "Appears to be a intentional")
     private String getTableNameForId(final String id) {
         if (this.tableIdToNameMap == null || !this.tableIdToNameMap.containsKey(id)) {
             // Refresh the cache as a table may have just been created
@@ -104,6 +107,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
     }
 
 
+    @SuppressFBWarnings("ICAST_IDIV_CAST_TO_DOUBLE")
     private List<MetricDatum> gatherMetrics() throws TException {
         final String awsEmrJobFlowId = AwsEmrUtils.getJobFlowId();
 
@@ -312,7 +316,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
                 final List<MetricDatum> metrics = this.gatherMetrics();
                 this.publishMetrics(metrics);
             } catch (final TException e) {
-                e.printStackTrace();
+                LOGGER.warn("Thrift Exception", e);
             }
 
             long finishTime = System.currentTimeMillis();
@@ -332,7 +336,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
 
     public static void main(final String[] args) {
         if (args.length != 2) {
-            System.err.println("Syntax: " + PublishAccumuloMetricsToCloudWatch.class.getSimpleName() + " <instanceName> <zookeepers>");
+            LOGGER.warn("Syntax: " + PublishAccumuloMetricsToCloudWatch.class.getSimpleName() + " <instanceName> <zookeepers>");
             System.exit(1);
         }
 

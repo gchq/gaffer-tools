@@ -16,6 +16,7 @@
 
 package uk.gov.gchq.gaffer.miniaccumulocluster;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.accumulo.minicluster.MemoryUnit;
 import org.apache.accumulo.minicluster.MiniAccumuloCluster;
 import org.apache.accumulo.minicluster.MiniAccumuloConfig;
@@ -49,6 +50,7 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
  *
  * @see uk.gov.gchq.gaffer.miniaccumulocluster.MiniAccumuloClusterController.Builder
  */
+@SuppressFBWarnings("DM_EXIT")
 public class MiniAccumuloClusterController {
     public static final String DEFAULT_DIR_NAME = "miniAccumuloCluster";
     public static final String DEFAULT_PASSWORD = "password";
@@ -57,7 +59,7 @@ public class MiniAccumuloClusterController {
     public static final boolean DEFAULT_IS_TEMP_DIR = false;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MiniAccumuloClusterController.class);
-    protected static boolean shutdownHookAdded = false;
+    private static boolean shutdownHookAdded = false;
 
     protected String dirName;
     protected boolean isTempDir;
@@ -72,7 +74,7 @@ public class MiniAccumuloClusterController {
     protected MiniAccumuloClusterController() {
     }
 
-    protected MiniAccumuloClusterController(final String[] args) {
+    protected MiniAccumuloClusterController(final String... args) {
         final Options options = new Options();
         options.addOption("h", "help", false, "help");
         options.addOption("d", "dirName", true, "directory name");
@@ -133,7 +135,7 @@ public class MiniAccumuloClusterController {
                 cluster = null;
                 LOGGER.info("Cluster stopped");
             } catch (final IOException | InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.warn("Shutdown Error", e);
             }
         }
 
@@ -142,7 +144,7 @@ public class MiniAccumuloClusterController {
                 FileUtils.deleteDirectory(clusterPath.toFile());
                 clusterPath = null;
             } catch (final IOException e) {
-                e.printStackTrace();
+                LOGGER.warn("Delete directory Error", e);
             }
         }
     }
@@ -166,7 +168,7 @@ public class MiniAccumuloClusterController {
             System.exit(2);
         }
 
-        System.err.println("Warning - please update your command line arguments.");
+        LOGGER.warn("Warning - please update your command line arguments.");
         printHelp(options);
         dirName = getDirName(args);
         isTempDir = isTempDir(args);
@@ -245,7 +247,7 @@ public class MiniAccumuloClusterController {
                     LOGGER.debug("Filename changed " + filename);
 
                     if (filename.toString().equals(SHUTDOWN_FILENAME)) {
-                        MiniAccumuloClusterController.this.stop();
+                        this.stop();
                         break OUTER;
                     }
                 }
@@ -289,27 +291,27 @@ public class MiniAccumuloClusterController {
         return heapSize;
     }
 
-    private static String getDirName(final String[] args) {
+    private static String getDirName(final String... args) {
         return getArgOrDefault(0, DEFAULT_DIR_NAME, args);
     }
 
-    private static boolean isTempDir(final String[] args) {
+    private static boolean isTempDir(final String... args) {
         return Boolean.parseBoolean(getArgOrDefault(1, Boolean.toString(DEFAULT_IS_TEMP_DIR), args));
     }
 
-    private static String getPassword(final String[] args) {
+    private static String getPassword(final String... args) {
         return getArgOrDefault(2, DEFAULT_PASSWORD, args);
     }
 
-    private static String getInstanceName(final String[] args) {
+    private static String getInstanceName(final String... args) {
         return getArgOrDefault(3, DEFAULT_INSTANCE_NAME, args);
     }
 
-    private static String getArgOrDefault(final int index, final String defaultValue, final String[] args) {
+    private static String getArgOrDefault(final int index, final String defaultValue, final String... args) {
         return hasArg(index, args) ? args[index] : defaultValue;
     }
 
-    private static boolean hasArg(final int index, final String[] args) {
+    private static boolean hasArg(final int index, final String... args) {
         return null != args && args.length > index && null != args[index];
     }
 

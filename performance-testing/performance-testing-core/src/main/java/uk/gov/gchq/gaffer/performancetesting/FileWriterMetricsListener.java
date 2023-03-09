@@ -18,8 +18,10 @@ package uk.gov.gchq.gaffer.performancetesting;
 import uk.gov.gchq.gaffer.commonutil.ToStringBuilder;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class FileWriterMetricsListener implements MetricsListener {
@@ -38,7 +40,7 @@ public class FileWriterMetricsListener implements MetricsListener {
         }
         filename = properties.getProperty(FILENAME);
         try {
-            writer = new BufferedWriter(new FileWriter(filename));
+            writer = Files.newBufferedWriter(Paths.get(filename), StandardCharsets.UTF_8);
         } catch (final IOException e) {
             throw new RuntimeException("IOException opening file", e);
         }

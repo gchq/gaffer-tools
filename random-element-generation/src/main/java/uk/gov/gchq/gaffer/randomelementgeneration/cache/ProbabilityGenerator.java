@@ -22,10 +22,10 @@ import java.util.SortedMap;
 
 public class ProbabilityGenerator<T> {
     private final Random random = new Random();
-    private T[] items;
-    private long totalCount;
-    private List<Double> probabilities;
-    private List<Double> cumulativeProbabilities;
+    private final T[] items;
+    private final long totalCount;
+    private final List<Double> probabilities;
+    private final List<Double> cumulativeProbabilities;
 
     public ProbabilityGenerator(final SortedMap<T, Long> itemsToFrequency) {
         this.items = (T[]) new Object[itemsToFrequency.size()];
