@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.randomelementgeneration.supplier;
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
@@ -43,8 +44,8 @@ import java.util.function.Supplier;
 public class RmatElementSupplier implements Supplier<Set<Element>> {
     protected final Random random = new Random();
     private double[] cumulativeProbs;
-    private int numBits;
-    private boolean includeEntities;
+    private final int numBits;
+    private final boolean includeEntities;
 
     public RmatElementSupplier(final double[] probabilities, final long maxNodeId, final boolean includeEntities) {
         validateProbabilities(probabilities);
@@ -72,9 +73,8 @@ public class RmatElementSupplier implements Supplier<Set<Element>> {
         long destination = 0L;
         for (int i = 0; i < numBits; i++) {
             final int quadrant = generateRandomQuadrant();
-            if (quadrant == 0) {
-                // Do nothing
-            } else if (quadrant == 1) {
+            // Do nothing if quadrant == 0
+            if (quadrant == 1) {
                 destination = destination ^ (1 << i);
             } else if (quadrant == 2) {
                 source = source ^ (1 << i);
@@ -119,7 +119,7 @@ public class RmatElementSupplier implements Supplier<Set<Element>> {
         return 3;
     }
 
-    private void validateProbabilities(final double[] probabilities) {
+    private void validateProbabilities(final double... probabilities) {
         // There should be 4 probabilities, they should all be greater than 0 and they should sum to 1.
         if (probabilities == null || probabilities.length != 4) {
             throw new IllegalArgumentException("Probabilities should be non-null and of length 4.");
@@ -134,7 +134,8 @@ public class RmatElementSupplier implements Supplier<Set<Element>> {
         }
     }
 
-    private void setCumulativeProbs(final double[] probabilities) {
+    private void setCumulativeProbs(final double... probabilities) {
+        // Should probably check the array has length 4?
         this.cumulativeProbs = new double[4];
         this.cumulativeProbs[0] = probabilities[0];
         this.cumulativeProbs[1] = probabilities[1] + this.cumulativeProbs[0];

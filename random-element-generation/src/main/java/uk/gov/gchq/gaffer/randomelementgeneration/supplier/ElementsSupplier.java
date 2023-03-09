@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.randomelementgeneration.supplier;
 
 import uk.gov.gchq.gaffer.data.element.Element;
@@ -29,7 +30,7 @@ import java.util.function.Supplier;
  * {@link Element}s by repeatedly calling that {@link Supplier}'s <code>get()</code> method.
  */
 public class ElementsSupplier implements Supplier<Element> {
-    private Iterator<Element> elementIterator;
+    private final Iterator<Element> elementIterator;
 
     public ElementsSupplier(final Supplier<Set<Element>> elementSupplier) {
         this.elementIterator = new ElementIterator(elementSupplier);
@@ -44,8 +45,8 @@ public class ElementsSupplier implements Supplier<Element> {
     }
 
     protected static class ElementIterator implements Iterator<Element> {
-        private Supplier<Set<Element>> elementSupplier;
-        private List<Element> cache;
+        private final Supplier<Set<Element>> elementSupplier;
+        private final List<Element> cache;
 
         ElementIterator(final Supplier<Set<Element>> elementSupplier) {
             this.elementSupplier = elementSupplier;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.randomelementgeneration.cache;
 
 import org.slf4j.Logger;
@@ -45,9 +46,9 @@ public class PreferentialAttachmentCache<T> implements Cache<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PreferentialAttachmentCache.class);
 
     private final Random random = new Random();
-    private TreeMap<Long, Set<T>> mapFreqToItems;
-    private TreeMap<T, Long> itemsToFreq;
-    private int maxSize;
+    private final TreeMap<Long, Set<T>> mapFreqToItems;
+    private final TreeMap<T, Long> itemsToFreq;
+    private final int maxSize;
 
     public PreferentialAttachmentCache(final int maxSize) {
         this.mapFreqToItems = new TreeMap<>(Collections.reverseOrder());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2016-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.miniaccumulocluster;
 
 import org.apache.accumulo.shell.Shell;
@@ -20,11 +21,11 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -48,10 +49,10 @@ public final class MiniAccumuloShellController {
         new MiniAccumuloShellController(propertiesFilename).run(commandFilename);
     }
 
-    private String instance;
-    private String user;
-    private String password;
-    private String zookeepers;
+    private final String instance;
+    private final String user;
+    private final String password;
+    private final String zookeepers;
     private Shell shell;
 
     private MiniAccumuloShellController(final String propertiesFilename) {
@@ -59,7 +60,7 @@ public final class MiniAccumuloShellController {
             throw new IllegalArgumentException("Properties file null");
         }
 
-        try (final InputStream is = new FileInputStream(new File(propertiesFilename))) {
+        try (final InputStream is = Files.newInputStream(Paths.get(propertiesFilename))) {
             final Properties props = new Properties();
             props.load(is);
 
@@ -104,7 +105,7 @@ public final class MiniAccumuloShellController {
             });
 
             if (null != commandFilename) {
-                final String cmd = IOUtils.toString(new FileInputStream(new File(commandFilename)));
+                final String cmd = IOUtils.toString(Files.newInputStream(Paths.get(commandFilename)), StandardCharsets.UTF_8);
                 LOGGER.info("Executing Command " + cmd);
                 shell.execCommand(cmd, false, true);
             } else {

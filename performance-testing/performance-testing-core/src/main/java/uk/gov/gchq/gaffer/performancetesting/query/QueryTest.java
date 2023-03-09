@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.performancetesting.query;
 
 import org.slf4j.Logger;
@@ -51,8 +52,8 @@ import java.util.stream.StreamSupport;
 public class QueryTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryTest.class);
 
-    private Graph graph;
-    private QueryTestProperties testProperties;
+    private final Graph graph;
+    private final QueryTestProperties testProperties;
     private MetricsListener metricsListener;
 
     public QueryTest(final Graph graph,
@@ -118,7 +119,7 @@ public class QueryTest {
         } catch (final OperationException e) {
             LOGGER.error("OperationException thrown after " + (System.currentTimeMillis() - startTime) / 1000.0
                     + " seconds");
-            throw new RuntimeException("Exception thrown getting elements");
+            throw new RuntimeException("Exception thrown getting elements", e);
         }
         final long endTime = System.currentTimeMillis();
         final double durationInSeconds = (endTime - startTime) / 1000.0;
@@ -138,7 +139,7 @@ public class QueryTest {
     }
 
     public static class ElementIdSupplierFactory {
-        private QueryTestProperties testProperties;
+        private final QueryTestProperties testProperties;
 
         public ElementIdSupplierFactory(final QueryTestProperties testProperties) {
             this.testProperties = testProperties;

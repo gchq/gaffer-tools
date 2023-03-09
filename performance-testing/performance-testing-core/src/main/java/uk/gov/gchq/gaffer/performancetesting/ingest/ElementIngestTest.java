@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.performancetesting.ingest;
 
 import org.slf4j.Logger;
@@ -43,8 +44,8 @@ import java.util.stream.Stream;
 public class ElementIngestTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ElementIngestTest.class);
 
-    private Graph graph;
-    private ElementIngestTestProperties testProperties;
+    private final Graph graph;
+    private final ElementIngestTestProperties testProperties;
     private MetricsListener metricsListener;
 
     public ElementIngestTest(final Graph graph,
@@ -105,7 +106,7 @@ public class ElementIngestTest {
         } catch (final OperationException e) {
             LOGGER.error("OperationException thrown after " + (System.currentTimeMillis() - startTime) / 1000.0
                     + " seconds");
-            throw new RuntimeException("Exception thrown adding elements");
+            throw new RuntimeException("Exception thrown adding elements", e);
         }
         final long endTime = System.currentTimeMillis();
         final double durationInSeconds = (endTime - startTime) / 1000.0;
@@ -128,7 +129,7 @@ public class ElementIngestTest {
     }
 
     public static class ElementSupplierFactory {
-        private ElementIngestTestProperties testProperties;
+        private final ElementIngestTestProperties testProperties;
 
         public ElementSupplierFactory(final ElementIngestTestProperties testProperties) {
             this.testProperties = testProperties;

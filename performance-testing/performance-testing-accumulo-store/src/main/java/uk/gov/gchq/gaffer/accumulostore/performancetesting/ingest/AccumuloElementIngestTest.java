@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.conf.Configuration;
@@ -49,9 +50,9 @@ import java.util.function.Supplier;
 public class AccumuloElementIngestTest extends Configured {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccumuloElementIngestTest.class);
 
-    private Graph graph;
-    private AccumuloStore accumuloStore;
-    private AccumuloElementIngestTestProperties testProperties;
+    private final Graph graph;
+    private final AccumuloStore accumuloStore;
+    private final AccumuloElementIngestTestProperties testProperties;
 
     public AccumuloElementIngestTest(final Graph graph,
                                      final AccumuloStore accumuloStore,
@@ -104,7 +105,7 @@ public class AccumuloElementIngestTest extends Configured {
         try {
             numTabletServers = accumuloStore.getConnection().instanceOperations().getTabletServers().size();
         } catch (final StoreException e) {
-            throw new OperationException("StoreException obtaining the number of tablet servers");
+            throw new OperationException("StoreException obtaining the number of tablet servers", e);
         }
         final int numSplitPoints = numTabletServers * Integer.parseInt(testProperties.getNumSplitPointsPerTabletServer());
 

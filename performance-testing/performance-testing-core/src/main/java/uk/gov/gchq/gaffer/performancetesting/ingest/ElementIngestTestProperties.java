@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.performancetesting.ingest;
 
 import uk.gov.gchq.gaffer.performancetesting.TestProperties;
@@ -46,6 +47,6 @@ public class ElementIngestTestProperties extends TestProperties {
         if (numEdges <= 0L) {
             throw new IllegalArgumentException("The number of edges must be greater than 0.");
         }
-        setProperty(NUMBER_OF_ELEMENTS, "" + numEdges);
+        setProperty(NUMBER_OF_ELEMENTS, String.valueOf(numEdges));
     }
 }

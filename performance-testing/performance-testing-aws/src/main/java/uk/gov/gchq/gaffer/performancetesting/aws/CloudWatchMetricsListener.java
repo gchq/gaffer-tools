@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class CloudWatchMetricsListener implements MetricsListener {
 
     private AmazonCloudWatch cloudwatch = null;
     private String namespace = null;
-    private List<Dimension> dimensions = new ArrayList<>();
+    private final List<Dimension> dimensions = new ArrayList<>();
 
     @Override
     public void initialise(final Properties properties) {
@@ -86,7 +86,7 @@ public class CloudWatchMetricsListener implements MetricsListener {
                 cloudwatchMetrics.add(
                     new MetricDatum()
                         .withMetricName(name)
-                        .withValue((double) value)
+                        .withValue((Double) value)
                         .withUnit(StandardUnit.CountSecond)
                         .withTimestamp(now)
                         .withDimensions(this.dimensions)
