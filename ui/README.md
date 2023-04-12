@@ -33,19 +33,20 @@ UI
     - [Feedback](#feedback)
 6. [Testing](#testing)
 
+## Deprecation
+
+The Gaffer UI was removed from gaffer-tools in the alpha-4 release of Gaffer 2.0 and will not be included in Gaffer 2.0 or later versions.
 
 ## Introduction
 
-
 This module contains a Gaffer UI that connects to a Gaffer REST API.
-See [gaffer-tools/ui](https://github.com/gchq/gaffer-tools/tree/master/ui).
 
 If you wish to deploy the war file to a container of your choice, then use this option.
 
 To build the war file along with all its dependencies then run the following command from the parent directory:
-' mvn clean install -Pquick'
+`mvn clean install -Pquick`
 
-To deploy it to a server of your choice, take target/ui-[version].war and deploy as per the usual deployment process for your server.
+To deploy it to a server of your choice, take `target/ui-[version].war` and deploy as per the usual deployment process for your server.
 
 Alternatively there is a maven profile "standalone-ui" that you can use to start the UI in a standalone tomcat server.
 Note that in order to use the UI it will need to be connected separately to a Gaffer REST API.
