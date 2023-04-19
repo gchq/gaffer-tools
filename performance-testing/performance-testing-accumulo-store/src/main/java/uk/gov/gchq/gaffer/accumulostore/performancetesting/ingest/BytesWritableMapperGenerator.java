@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,14 @@ import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.MapContext;
 
-import uk.gov.gchq.gaffer.commonutil.CommonConstants;
 import uk.gov.gchq.gaffer.data.element.Element;
-import uk.gov.gchq.gaffer.data.elementdefinition.exception.SchemaException;
 import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.hdfs.operation.handler.job.factory.SampleDataForSplitPointsJobFactory;
 import uk.gov.gchq.gaffer.hdfs.operation.mapper.generator.MapperGenerator;
 import uk.gov.gchq.gaffer.store.schema.Schema;
 import uk.gov.gchq.gaffer.store.serialiser.ElementSerialiser;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,14 +44,9 @@ public class BytesWritableMapperGenerator implements MapperGenerator<NullWritabl
     }
 
     private void createElementGenerator(final Configuration conf) {
-        final Schema schema;
-        try {
-            schema = Schema.fromJson(conf
-                    .get(SampleDataForSplitPointsJobFactory.SCHEMA)
-                    .getBytes(CommonConstants.UTF_8));
-        } catch (final UnsupportedEncodingException e) {
-            throw new SchemaException("Unable to deserialise Store Schema from JSON", e);
-        }
+        final Schema schema = Schema.fromJson(conf
+                .get(SampleDataForSplitPointsJobFactory.SCHEMA)
+                .getBytes(StandardCharsets.UTF_8));
         this.elementGenerator = new BytesWritableElementGenerator(new ElementSerialiser(schema));
     }
 
