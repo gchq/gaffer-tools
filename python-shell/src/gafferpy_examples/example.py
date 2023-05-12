@@ -947,7 +947,7 @@ def complex_op_chain(gc):
                 include_incoming_out_going=g.InOutType.OUT
             ),
             g.ToCsv(
-                element_generator=g.CsvGenerator(
+                csv_generator=g.CsvGenerator(
                     fields={
                         'VERTEX': 'Junction',
                         'busCount': 'Bus Count'
