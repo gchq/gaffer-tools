@@ -21,7 +21,7 @@
     <parent>
         <groupId>uk.gov.gchq.gaffer</groupId>
         <artifactId>gaffer2</artifactId>
-        <version>2.0.0-alpha-0.5</version>
+        <version>2.0.0-alpha-0.6</version>
     </parent>
 
     <artifactId>gaffer-tools</artifactId>
@@ -31,7 +31,7 @@
     <!-- For <modules> see default profile -->
 
     <properties>
-        <gaffer.version>2.0.0-alpha-0.5</gaffer.version>
+        <gaffer.version>2.0.0-alpha-0.6</gaffer.version>
         <scm.url>
             https://github.com/gchq/gaffer-tools
         </scm.url>
