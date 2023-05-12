@@ -214,42 +214,6 @@ class UnwrapEntityId(AbstractFunction):
         return super().to_json()
 
 
-class CsvElementGenerator(AbstractFunction):
-    CLASS = "uk.gov.gchq.gaffer.data.generator.CsvElementGenerator"
-
-    def __init__(
-            self,
-            first_row=None,
-            trim=None,
-            delimiter=None,
-            null_string=None,
-            header=None,
-            csv_format=None):
-        super().__init__(_class_name=self.CLASS)
-        self.first_row = first_row
-        self.trim = trim
-        self.delimiter = delimiter
-        self.null_string = null_string
-        self.header = header
-        self.csv_format = csv_format
-
-    def to_json(self):
-        function_json = super().to_json()
-        if self.first_row is not None:
-            function_json["firstRow"] = self.first_row
-        if self.trim is not None:
-            function_json["trim"] = self.trim
-        if self.delimiter is not None:
-            function_json["delimiter"] = self.delimiter
-        if self.null_string is not None:
-            function_json["nullString"] = self.null_string
-        if self.header is not None:
-            function_json["header"] = self.header
-        if self.csv_format is not None:
-            function_json["csvFormat"] = self.csv_format
-        return function_json
-
-
 class CsvGenerator(AbstractFunction):
     CLASS = "uk.gov.gchq.gaffer.data.generator.CsvGenerator"
 
@@ -257,11 +221,15 @@ class CsvGenerator(AbstractFunction):
             self,
             quoted=None,
             comma_replacement=None,
+            include_default_fields=None,
+            include_schema_properties=None,
             constants=None,
             fields=None):
         super().__init__(_class_name=self.CLASS)
         self.quoted = quoted
         self.comma_replacement = comma_replacement
+        self.include_default_fields = include_default_fields
+        self.include_schema_properties = include_schema_properties
         self.constants = constants
         self.fields = fields
 
@@ -271,6 +239,10 @@ class CsvGenerator(AbstractFunction):
             function_json["quoted"] = self.quoted
         if self.comma_replacement is not None:
             function_json["commaReplacement"] = self.comma_replacement
+        if self.include_default_fields is not None:
+            function_json["includeDefaultFields"] = self.include_default_fields
+        if self.include_schema_properties is not None:
+            function_json["includeSchemaProperties"] = self.include_schema_properties
         if self.constants is not None:
             function_json["constants"] = self.constants
         if self.fields is not None:
@@ -301,6 +273,134 @@ class MapGenerator(AbstractFunction):
 
     def to_json(self):
         function_json = super().to_json()
+        if self.constants is not None:
+            function_json["constants"] = self.constants
+        if self.fields is not None:
+            function_json["fields"] = self.fields
+        return function_json
+
+
+class Neo4jCsvElementGenerator(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.generator.Neo4jCsvElementGenerator"
+
+    def __init__(
+            self,
+            first_row=None,
+            trim=None,
+            delimiter=None,
+            null_string=None):
+        super().__init__(_class_name=self.CLASS)
+        self.first_row = first_row
+        self.trim = trim
+        self.delimiter = delimiter
+        self.null_string = null_string
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.first_row is not None:
+            function_json["firstRow"] = self.first_row
+        if self.trim is not None:
+            function_json["trim"] = self.trim
+        if self.delimiter is not None:
+            function_json["delimiter"] = self.delimiter
+        if self.null_string is not None:
+            function_json["nullString"] = self.null_string
+        return function_json
+
+
+class Neo4jCsvGenerator(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.generator.Neo4jCsvGenerator"
+
+    def __init__(
+            self,
+            quoted=None,
+            comma_replacement=None,
+            include_default_fields=None,
+            include_schema_properties=None,
+            constants=None,
+            fields=None):
+        super().__init__(_class_name=self.CLASS)
+        self.quoted = quoted
+        self.comma_replacement = comma_replacement
+        self.include_default_fields = include_default_fields
+        self.include_schema_properties = include_schema_properties
+        self.constants = constants
+        self.fields = fields
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.quoted is not None:
+            function_json["quoted"] = self.quoted
+        if self.comma_replacement is not None:
+            function_json["commaReplacement"] = self.comma_replacement
+        if self.include_default_fields is not None:
+            function_json["includeDefaultFields"] = self.include_default_fields
+        if self.include_schema_properties is not None:
+            function_json["includeSchemaProperties"] = self.include_schema_properties
+        if self.constants is not None:
+            function_json["constants"] = self.constants
+        if self.fields is not None:
+            function_json["fields"] = self.fields
+        return function_json
+
+
+class NeptuneCsvElementGenerator(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.generator.NeptuneCsvElementGenerator"
+
+    def __init__(
+            self,
+            first_row=None,
+            trim=None,
+            delimiter=None,
+            null_string=None):
+        super().__init__(_class_name=self.CLASS)
+        self.first_row = first_row
+        self.trim = trim
+        self.delimiter = delimiter
+        self.null_string = null_string
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.first_row is not None:
+            function_json["firstRow"] = self.first_row
+        if self.trim is not None:
+            function_json["trim"] = self.trim
+        if self.delimiter is not None:
+            function_json["delimiter"] = self.delimiter
+        if self.null_string is not None:
+            function_json["nullString"] = self.null_string
+        return function_json
+
+
+class NeptuneCsvGenerator(AbstractFunction):
+    CLASS = "uk.gov.gchq.gaffer.data.generator.NeptuneCsvGenerator"
+
+    def __init__(
+            self,
+            quoted=None,
+            comma_replacement=None,
+            include_default_fields=None,
+            include_schema_properties=None,
+            constants=None,
+            fields=None):
+        super().__init__(_class_name=self.CLASS)
+        self.quoted = quoted
+        self.comma_replacement = comma_replacement
+        self.include_default_fields = include_default_fields
+        self.include_schema_properties = include_schema_properties
+        self.constants = constants
+        self.fields = fields
+
+    def to_json(self):
+        function_json = super().to_json()
+        if self.quoted is not None:
+            function_json["quoted"] = self.quoted
+        if self.comma_replacement is not None:
+            function_json["commaReplacement"] = self.comma_replacement
+        if self.include_default_fields is not None:
+            function_json["includeDefaultFields"] = self.include_default_fields
+        if self.include_schema_properties is not None:
+            function_json["includeSchemaProperties"] = self.include_schema_properties
         if self.constants is not None:
             function_json["constants"] = self.constants
         if self.fields is not None:

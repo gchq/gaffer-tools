@@ -108,6 +108,57 @@ class GetElementsBetweenSets(Operation):
         return operation_json
 
 
+class GetElementsBetweenSetsPairs(Operation):
+    """
+    Gets edges that exist between 2 sets and entities in the first set
+
+    Args:
+        input:
+        view:
+        include_incoming_out_going: Should the edges point towards, or away from your seeds
+        directed_type: Is the Edge directed?
+        backwards_compatible_operation:
+        views:
+        options: Additional map of options
+    Returns:
+        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
+    """
+    CLASS = "uk.gov.gchq.gaffer.accumulostore.operation.impl.GetElementsBetweenSetsPairs"
+
+    def __init__(
+            self,
+            input: typing.Tuple[typing.Any] = None,
+            view: View = None,
+            include_incoming_out_going: str = None,
+            directed_type: str = None,
+            backwards_compatible_operation: typing.Any = None,
+            views: typing.List[View] = None,
+            options: typing.Dict[str, str] = None):
+        super().__init__(_class_name=self.CLASS, options=options)
+        self.input = input
+        self.view = view
+        self.include_incoming_out_going = include_incoming_out_going
+        self.directed_type = directed_type
+        self.backwards_compatible_operation = backwards_compatible_operation
+        self.views = views
+
+    def to_json(self):
+        operation_json = super().to_json()
+        if self.input is not None:
+            operation_json["input"] = self.input
+        if self.view is not None:
+            operation_json["view"] = self.view
+        if self.include_incoming_out_going is not None:
+            operation_json["includeIncomingOutGoing"] = self.include_incoming_out_going
+        if self.directed_type is not None:
+            operation_json["directedType"] = self.directed_type
+        if self.backwards_compatible_operation is not None:
+            operation_json["backwardsCompatibleOperation"] = self.backwards_compatible_operation
+        if self.views is not None:
+            operation_json["views"] = self.views
+        return operation_json
+
+
 class GetElementsInRanges(Operation):
     """
     Gets elements that have vertices within a given range
@@ -584,6 +635,7 @@ class RemoveGraph(Operation):
 
     Args:
         graph_id:
+        remove_cache:
         user_requesting_admin_usage:
         options: Additional map of options
     Returns:
@@ -594,14 +646,18 @@ class RemoveGraph(Operation):
     def __init__(
             self,
             graph_id: str,
+            remove_cache: bool = None,
             user_requesting_admin_usage: bool = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.remove_cache = remove_cache
         self.graph_id = graph_id
         self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
+        if self.remove_cache is not None:
+            operation_json["removeCache"] = self.remove_cache
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
         if self.user_requesting_admin_usage is not None:
@@ -614,6 +670,7 @@ class RemoveGraphAndDeleteAllData(Operation):
     Used to tell a graph to delete all data, before being removed.
 
     Args:
+        remove_cache:
         graph_id:
         user_requesting_admin_usage:
         options: Additional map of options
@@ -624,15 +681,19 @@ class RemoveGraphAndDeleteAllData(Operation):
 
     def __init__(
             self,
+            remove_cache: bool = None,
             graph_id: str = None,
             user_requesting_admin_usage: bool = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
+        self.remove_cache = remove_cache
         self.graph_id = graph_id
         self.user_requesting_admin_usage = user_requesting_admin_usage
 
     def to_json(self):
         operation_json = super().to_json()
+        if self.remove_cache is not None:
+            operation_json["removeCache"] = self.remove_cache
         if self.graph_id is not None:
             operation_json["graphId"] = self.graph_id
         if self.user_requesting_admin_usage is not None:
@@ -2115,62 +2176,6 @@ class AddElementsFromSocket(Operation):
         return operation_json
 
 
-class CsvToElements(Operation):
-    """
-    Adds elements from a openCypher CSV file
-
-    Args:
-        input:
-        trim:
-        delimiter:
-        null_string:
-        skip_invalid_elements:
-        csv_format:
-        validate:
-        options: Additional map of options
-    Returns:
-        java.lang.Iterable<uk.gov.gchq.gaffer.data.element.Element>
-    """
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.add.CsvToElements"
-
-    def __init__(
-            self,
-            input: typing.List[str] = None,
-            trim: bool = None,
-            delimiter: str = None,
-            null_string: str = None,
-            skip_invalid_elements: bool = None,
-            csv_format: typing.Any = None,
-            validate: bool = None,
-            options: typing.Dict[str, str] = None):
-        super().__init__(_class_name=self.CLASS, options=options)
-        self.input = input
-        self.trim = trim
-        self.delimiter = delimiter
-        self.null_string = null_string
-        self.skip_invalid_elements = skip_invalid_elements
-        self.csv_format = csv_format
-        self.validate = validate
-
-    def to_json(self):
-        operation_json = super().to_json()
-        if self.input is not None:
-            operation_json["input"] = self.input
-        if self.trim is not None:
-            operation_json["trim"] = self.trim
-        if self.delimiter is not None:
-            operation_json["delimiter"] = self.delimiter
-        if self.null_string is not None:
-            operation_json["nullString"] = self.null_string
-        if self.skip_invalid_elements is not None:
-            operation_json["skipInvalidElements"] = self.skip_invalid_elements
-        if self.csv_format is not None:
-            operation_json["csvFormat"] = self.csv_format
-        if self.validate is not None:
-            operation_json["validate"] = self.validate
-        return operation_json
-
-
 class Max(Operation):
     """
     Extracts the maximum element based on provided Comparators
@@ -3036,9 +3041,8 @@ class ToCsv(Operation):
 
     Args:
         input:
-        element_generator: Generates a CSV string for each element
+        csv_generator: Generates a CSV string for each element
         include_header:
-        csv_format:
         options: Additional map of options
     Returns:
         java.lang.Iterable<java.lang.String>
@@ -3048,26 +3052,22 @@ class ToCsv(Operation):
     def __init__(
             self,
             input: typing.List[gafferpy.gaffer_core.Element] = None,
-            element_generator: gafferpy.generated_api.functions.CsvGenerator = None,
+            csv_generator: gafferpy.generated_api.functions.CsvGenerator = None,
             include_header: bool = None,
-            csv_format: typing.Any = None,
             options: typing.Dict[str, str] = None):
         super().__init__(_class_name=self.CLASS, options=options)
         self.input = input
-        self.element_generator = element_generator
+        self.csv_generator = csv_generator
         self.include_header = include_header
-        self.csv_format = csv_format
 
     def to_json(self):
         operation_json = super().to_json()
         if self.input is not None:
             operation_json["input"] = self.input
-        if self.element_generator is not None:
-            operation_json["elementGenerator"] = self.element_generator
+        if self.csv_generator is not None:
+            operation_json["csvGenerator"] = self.csv_generator
         if self.include_header is not None:
             operation_json["includeHeader"] = self.include_header
-        if self.csv_format is not None:
-            operation_json["csvFormat"] = self.csv_format
         return operation_json
 
 
@@ -3151,37 +3151,6 @@ class ToMap(Operation):
             operation_json["input"] = self.input
         if self.element_generator is not None:
             operation_json["elementGenerator"] = self.element_generator
-        return operation_json
-
-
-class ToOpenCypherCsv(Operation):
-    """
-    Converts elements to CSV Strings
-
-    Args:
-        input:
-        neo4j_format:
-        options: Additional map of options
-    Returns:
-        java.lang.Iterable<java.lang.String>
-    """
-    CLASS = "uk.gov.gchq.gaffer.operation.impl.output.ToOpenCypherCsv"
-
-    def __init__(
-            self,
-            input: typing.List[gafferpy.gaffer_core.Element] = None,
-            neo4j_format: bool = None,
-            options: typing.Dict[str, str] = None):
-        super().__init__(_class_name=self.CLASS, options=options)
-        self.input = input
-        self.neo4j_format = neo4j_format
-
-    def to_json(self):
-        operation_json = super().to_json()
-        if self.input is not None:
-            operation_json["input"] = self.input
-        if self.neo4j_format is not None:
-            operation_json["neo4jFormat"] = self.neo4j_format
         return operation_json
 
 
