@@ -3012,7 +3012,7 @@ class GafferOperationsTest(unittest.TestCase):
                 } ]
               }, {
                 "class" : "uk.gov.gchq.gaffer.operation.impl.output.ToCsv",
-                "elementGenerator" : {
+                "csvGenerator" : {
                   "class" : "uk.gov.gchq.gaffer.data.generator.CsvGenerator",
                   "fields" : {
                     "GROUP" : "Edge group",
@@ -3040,7 +3040,7 @@ class GafferOperationsTest(unittest.TestCase):
                     ),
                     g.ToCsv(
                         include_header=True,
-                        element_generator=g.CsvGenerator(
+                        csv_generator=g.CsvGenerator(
                             fields={
                                 'GROUP': 'Edge group',
                                 'VERTEX': 'vertex',
