@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - name: Checkout v2-alpha
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: v2-alpha
         token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
