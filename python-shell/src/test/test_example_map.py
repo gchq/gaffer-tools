@@ -16,7 +16,7 @@
 
 import unittest
 
-import example_map
+from gafferpy_examples import example_map
 
 
 class ExampleMapTest(unittest.TestCase):

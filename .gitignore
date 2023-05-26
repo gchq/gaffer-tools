@@ -37,6 +37,7 @@ __pycache__
 .ipynb_checkpoints
 *.ScriptBin
 *.egg-info/
+**/generated
 
 # nohup
 nohup.out

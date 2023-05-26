@@ -1,0 +1,41 @@
+{% extends 'base.py.j2' %}
+
+{% block content %}
+from gafferpy.{{ import_path }} import {{ base_class }}
+{%- for func in functions %}
+{%- set fields = get_fields(func) %}
+
+
+class {{ short_name(func) }}({{ base_class }}):
+    CLASS = "{{ func }}"
+    {%- if fields|length > 0 %}
+
+    def __init__(
+            self,
+            {%- for field in (fields[:-1]) %}
+            {{ snake_case(field) }}=None,
+            {%- endfor %}
+            {{ snake_case(fields[-1]) }}=None):
+    {%- else %}
+
+    def __init__(self):
+    {%- endif %}
+        super().__init__(_class_name=self.CLASS)
+        {%- for field in fields %}
+        self.{{ snake_case(field) }} = {{ snake_case(field) }}
+        {%- endfor %}
+
+    def to_json(self):
+        {%- if fields|length > 0 %}
+        function_json = super().to_json()
+        {%- for field in fields %}
+        if self.{{ snake_case(field) }} is not None:
+            function_json["{{ field }}"] = self.{{ snake_case(field) }}
+        {%- endfor %}
+        return function_json
+        {%- else %}
+        return super().to_json()
+        {%- endif %}
+
+{%- endfor %}
+{% endblock %}

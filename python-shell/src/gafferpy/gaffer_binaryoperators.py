@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2019 Crown Copyright
+# Copyright 2016-2022 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ This module contains Python copies of Gaffer java classes
 
 from gafferpy.gaffer_core import *
 
+
 class BinaryOperator(ToJson, ToCodeString):
     CLASS = "java.util.function.BinaryOperator"
 
@@ -38,6 +39,7 @@ class BinaryOperator(ToJson, ToCodeString):
 
         return function_json
 
+
 class AbstractBinaryOperator(BinaryOperator):
     CLASS = "java.util.function.BinaryOperator"
 
@@ -54,43 +56,9 @@ class AbstractBinaryOperator(BinaryOperator):
         return function_json
 
 
-class Sum(AbstractBinaryOperator):
-    CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Sum"
+# Import generated binary operator implementations from fishbowl
+from gafferpy.generated_api.binary_operators import *
 
-    def __init__(self):
-        super().__init__(_class_name=self.CLASS)
-    
-    def to_json(self):
-        return super().to_json()
-
-
-class Max(AbstractBinaryOperator):
-    CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Max"
-
-    def __init__(self):
-        super().__init__(_class_name=self.CLASS)
-
-    def to_json(self):
-        return super().to_json()
-
-
-class Min(AbstractBinaryOperator):
-    CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.Min"
-
-    def __init__(self):
-        super().__init__(_class_name=self.CLASS)
-
-    def to_json(self):
-        return super().to_json()
-
-class CollectionConcat(AbstractBinaryOperator):
-    CLASS = "uk.gov.gchq.koryphe.impl.binaryoperator.CollectionConcat"
-
-    def __init__(self):
-        super().__init__(_class_name=self.CLASS)
-
-    def to_json(self):
-        return super().to_json()
 
 class BinaryOperatorContext(ToJson, ToCodeString):
     CLASS = "gaffer.AggregatorContext"
@@ -110,6 +78,7 @@ class BinaryOperatorContext(ToJson, ToCodeString):
             function_json['binaryOperator'] = self.binary_operator.to_json()
 
         return function_json
+
 
 def binary_operator_context_converter(obj):
     if 'class' in obj:
@@ -160,6 +129,7 @@ def load_binaryoperator_json_map():
         if hasattr(class_obj, 'CLASS'):
             JsonConverter.GENERIC_JSON_CONVERTERS[class_obj.CLASS] = \
                 lambda obj, class_obj=class_obj: class_obj(**obj)
+            JsonConverter.CLASS_MAP[class_obj.CLASS] = class_obj
     JsonConverter.CUSTOM_JSON_CONVERTERS[
         BinaryOperatorContext.CLASS] = binary_operator_context_converter
     JsonConverter.CUSTOM_JSON_CONVERTERS[

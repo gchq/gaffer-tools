@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,20 @@ import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataResult;
 import com.amazonaws.services.cloudwatch.model.StandardUnit;
-import org.apache.accumulo.core.client.ZooKeeperInstance;
-import org.apache.accumulo.core.client.impl.MasterClient;
-import org.apache.accumulo.core.client.impl.Tables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.accumulo.core.client.Accumulo;
+import org.apache.accumulo.core.client.AccumuloClient;
+import org.apache.accumulo.core.clientImpl.MasterClient;
+import org.apache.accumulo.core.clientImpl.Tables;
+import org.apache.accumulo.core.conf.SiteConfiguration;
+import org.apache.accumulo.core.data.TableId;
 import org.apache.accumulo.core.master.thrift.MasterClientService;
 import org.apache.accumulo.core.master.thrift.MasterMonitorInfo;
 import org.apache.accumulo.core.master.thrift.TableInfo;
 import org.apache.accumulo.core.master.thrift.TabletServerStatus;
-import org.apache.accumulo.core.trace.Tracer;
+import org.apache.accumulo.core.trace.TraceUtil;
 import org.apache.accumulo.core.util.Pair;
-import org.apache.accumulo.server.AccumuloServerContext;
-import org.apache.accumulo.server.conf.ServerConfigurationFactory;
+import org.apache.accumulo.server.ServerContext;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,38 +51,38 @@ import java.util.Map;
 /*
  * This utility periodically collects metrics from an Accumulo Master and publishes them to AWS CloudWatch
  */
+@SuppressWarnings("UnusedPrivateField")
 public class PublishAccumuloMetricsToCloudWatch implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PublishAccumuloMetricsToCloudWatch.class);
 
     private final String instanceName;
     private final String zookeepers;
-    private int interval = 60;
+    private final int interval;
 
-    private ZooKeeperInstance instance;
-    private AccumuloServerContext context;
+    private AccumuloClient instance;
+    private ServerContext context;
     private MasterClientService.Client client;
     private AmazonCloudWatch cloudwatch;
 
-    private Map<String, String> tableIdToNameMap;
+    private Map<TableId, String> tableIdToNameMap;
     private Date previousCaptureDate = null;
     private Map<Pair<String, List<Dimension>>, Double> previousMetrics = null;
 
     public PublishAccumuloMetricsToCloudWatch(final String instanceName, final String zookeepers) {
-        this.instanceName = instanceName;
-        this.zookeepers = zookeepers;
+        this(instanceName, zookeepers, 60);
     }
 
     public PublishAccumuloMetricsToCloudWatch(final String instanceName, final String zookeepers, final int interval) {
-        this(instanceName, zookeepers);
+        this.instanceName = instanceName;
+        this.zookeepers = zookeepers;
         this.interval = interval;
     }
 
     private void connect() {
         // Connect to Accumulo Master
-        this.instance = new ZooKeeperInstance(this.instanceName, this.zookeepers);
-        ServerConfigurationFactory config = new ServerConfigurationFactory(this.instance);
-        this.context = new AccumuloServerContext(config);
+        this.instance = Accumulo.newClient().to(instanceName, zookeepers).as("admin", "admin").build();
+        this.context = new ServerContext(new SiteConfiguration());
         this.client = MasterClient.getConnection(this.context);
 
         // Set up connection to AWS CloudWatch
@@ -93,20 +96,22 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
         }
     }
 
+    @SuppressFBWarnings(value = "GC_UNRELATED_TYPES", justification = "Appears to be a intentional")
     private String getTableNameForId(final String id) {
         if (this.tableIdToNameMap == null || !this.tableIdToNameMap.containsKey(id)) {
             // Refresh the cache as a table may have just been created
-            this.tableIdToNameMap = Tables.getIdToNameMap(this.instance);
+            this.tableIdToNameMap = Tables.getIdToNameMap(this.context);
         }
 
         return this.tableIdToNameMap.get(id);
     }
 
 
+    @SuppressFBWarnings("ICAST_IDIV_CAST_TO_DOUBLE")
     private List<MetricDatum> gatherMetrics() throws TException {
         final String awsEmrJobFlowId = AwsEmrUtils.getJobFlowId();
 
-        final MasterMonitorInfo stats = this.client.getMasterStats(Tracer.traceInfo(), this.context.rpcCreds());
+        final MasterMonitorInfo stats = this.client.getMasterStats(TraceUtil.traceInfo(), this.context.rpcCreds());
         LOGGER.trace(stats.toString());
 
         final Date now = new Date();
@@ -311,7 +316,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
                 final List<MetricDatum> metrics = this.gatherMetrics();
                 this.publishMetrics(metrics);
             } catch (final TException e) {
-                e.printStackTrace();
+                LOGGER.warn("Thrift Exception", e);
             }
 
             long finishTime = System.currentTimeMillis();
@@ -331,7 +336,7 @@ public class PublishAccumuloMetricsToCloudWatch implements Runnable {
 
     public static void main(final String[] args) {
         if (args.length != 2) {
-            System.err.println("Syntax: " + PublishAccumuloMetricsToCloudWatch.class.getSimpleName() + " <instanceName> <zookeepers>");
+            LOGGER.warn("Syntax: " + PublishAccumuloMetricsToCloudWatch.class.getSimpleName() + " <instanceName> <zookeepers>");
             System.exit(1);
         }
 

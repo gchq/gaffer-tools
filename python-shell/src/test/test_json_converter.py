@@ -20,6 +20,7 @@ import json
 from gafferpy import gaffer as g
 from gafferpy.gaffer_core import JsonConverter
 
+
 class JsonConverterTest(unittest.TestCase):
     def test_throw_improper_string_json(self):
         with self.assertRaises(json.JSONDecodeError):
@@ -28,28 +29,29 @@ class JsonConverterTest(unittest.TestCase):
     def test_throw_when_op(self):
         with self.assertRaises(TypeError):
             JsonConverter.from_json(g.GetAllElements())
-        
+
     def test_throw_when_not_json(self):
         class NonJsonSerialisable():
             pass
-    
+
         with self.assertRaises(TypeError):
             JsonConverter.from_json(NonJsonSerialisable())
-    
+
     def test_correct_json(self):
         op_json = {
-            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
+            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
         }
-        
+
         self.assertEqual(JsonConverter.from_json(op_json), g.GetAllElements())
 
     def test_incorrect_json(self):
         op_json = {
-            "class" : "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
+            "class": "uk.gov.gchq.gaffer.operation.impl.get.GetAllElements"
         }
-        
+
         with self.assertRaises(TypeError):
             JsonConverter.from_json(op_json, g.GetAllGraphIds())
+
 
 if __name__ == "__main__":
     unittest.main()

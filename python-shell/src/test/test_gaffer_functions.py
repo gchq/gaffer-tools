@@ -892,7 +892,6 @@ class GafferFunctionsTest(unittest.TestCase):
             {
                 "class": "uk.gov.gchq.koryphe.impl.function.ParseDate",
                 "timeZone": "BST",
-                "microseconds": false,
                 "format": "DD-MM-YYYY"
             }
             ''',
@@ -994,7 +993,7 @@ class GafferFunctionsTest(unittest.TestCase):
                 visibility_aggregator=g.gaffer_binaryoperators.CollectionConcat(),
                 visibility_property="visibility",
                 related_vertex_groups=["relatesTo"]
-                )
+            )
         ],
         [
             '''
@@ -1086,12 +1085,12 @@ class GafferFunctionsTest(unittest.TestCase):
         ],
         [
             '''
-            { 
+            {
                  "class": "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite",
-                 "functions": [ 
-                    { 
+                 "functions": [
+                    {
                        "selection": [ "something" ],
-                       "function": { 
+                       "function": {
                           "class":"uk.gov.gchq.koryphe.impl.function.ToUpperCase"
                        },
                        "projection": [1]
@@ -1110,27 +1109,27 @@ class GafferFunctionsTest(unittest.TestCase):
         ],
         [
             '''
-            { 
+            {
                "class": "uk.gov.gchq.koryphe.impl.function.FunctionChain",
-               "functions": [ 
-                  { 
+               "functions": [
+                  {
                      "class": "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite",
-                     "functions": [ 
-                        { 
+                     "functions": [
+                        {
                            "selection": [0],
-                           "function": { 
+                           "function": {
                               "class":"uk.gov.gchq.koryphe.impl.function.ToUpperCase"
                            },
                            "projection": [1]
                         }
                      ]
                   },
-                  { 
+                  {
                      "class": "uk.gov.gchq.koryphe.tuple.function.TupleAdaptedFunctionComposite",
-                     "functions": [ 
-                        { 
+                     "functions": [
+                        {
                            "selection": [1],
-                           "function": { 
+                           "function": {
                               "class":"uk.gov.gchq.koryphe.impl.function.ToSet"
                            },
                            "projection": [2]

@@ -530,7 +530,7 @@ class GafferPredicatesTest(unittest.TestCase):
             )
         ],
         [
-                    '''
+            '''
                     {
                         "class" : "uk.gov.gchq.koryphe.impl.predicate.If",
                         "condition" : true,
@@ -541,13 +541,13 @@ class GafferPredicatesTest(unittest.TestCase):
                         }
                     }
                     ''',
-                    g.pred.If(
-                        condition=True,
-                        then=g.IsLongerThan(
-                            min_length=20,
-                            or_equal_to=True
-                        )
-                    )
+            g.pred.If(
+                condition=True,
+                then=g.IsLongerThan(
+                    min_length=20,
+                    or_equal_to=True
+                )
+            )
         ],
         [
             '''

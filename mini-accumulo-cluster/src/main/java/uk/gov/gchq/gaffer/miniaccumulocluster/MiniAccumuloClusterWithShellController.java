@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Crown Copyright
+ * Copyright 2016-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class MiniAccumuloClusterWithShellController extends MiniAccumuloClusterC
         super();
     }
 
-    public MiniAccumuloClusterWithShellController(final String[] args) {
+    public MiniAccumuloClusterWithShellController(final String... args) {
         super(args);
     }
 
@@ -49,10 +49,9 @@ public class MiniAccumuloClusterWithShellController extends MiniAccumuloClusterC
             start();
         }
 
-        final String[] shellArgs = new String[]{
-                "-u", "root",
-                "-p", cluster.getConfig().getRootPassword(),
-                "-z", cluster.getInstanceName(), cluster.getZooKeepers()};
+        final String[] shellArgs = {"-u", "root",
+                                    "-p", cluster.getConfig().getRootPassword(),
+                                    "-z", cluster.getInstanceName(), cluster.getZooKeepers()};
 
         try {
             shell = new Shell();
@@ -61,7 +60,7 @@ public class MiniAccumuloClusterWithShellController extends MiniAccumuloClusterC
             }
             shell.start();
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to start shell");
+            throw new RuntimeException("Failed to start shell", e);
         }
     }
 
