@@ -6,7 +6,6 @@ on:
     branches:
       - 'release/**'
       - 'hotfix/**'
-      - 'alpha-release/**'
 
 jobs:
   autopep8:
