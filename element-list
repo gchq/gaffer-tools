@@ -1,0 +1,10 @@
+uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest
+uk.gov.gchq.gaffer.miniaccumulocluster
+uk.gov.gchq.gaffer.performancetesting
+uk.gov.gchq.gaffer.performancetesting.aws
+uk.gov.gchq.gaffer.performancetesting.ingest
+uk.gov.gchq.gaffer.performancetesting.query
+uk.gov.gchq.gaffer.randomelementgeneration
+uk.gov.gchq.gaffer.randomelementgeneration.cache
+uk.gov.gchq.gaffer.randomelementgeneration.generator
+uk.gov.gchq.gaffer.randomelementgeneration.supplier
