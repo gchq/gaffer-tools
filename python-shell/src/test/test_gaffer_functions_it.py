@@ -52,7 +52,8 @@ class GafferFunctionsIntegrationTest(unittest.TestCase):
         ]
 
         for i in ignore_functions:
-            if i in functions: functions.remove(i)
+            if i in functions:
+                functions.remove(i)
 
         for op in functions:
             self.assertTrue(op in g.JsonConverter.GENERIC_JSON_CONVERTERS,

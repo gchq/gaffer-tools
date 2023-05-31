@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.conf.Configuration;
@@ -28,9 +29,10 @@ import org.slf4j.LoggerFactory;
 import uk.gov.gchq.gaffer.accumulostore.AccumuloStore;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.graph.Graph;
+import uk.gov.gchq.gaffer.graph.GraphConfig;
 import uk.gov.gchq.gaffer.hdfs.operation.SampleDataForSplitPoints;
 import uk.gov.gchq.gaffer.operation.OperationException;
-import uk.gov.gchq.gaffer.operation.impl.SplitStore;
+import uk.gov.gchq.gaffer.operation.impl.SplitStoreFromFile;
 import uk.gov.gchq.gaffer.performancetesting.ingest.ElementIngestTest;
 import uk.gov.gchq.gaffer.randomelementgeneration.generator.ElementGeneratorFromSupplier;
 import uk.gov.gchq.gaffer.serialisation.ToBytesSerialiser;
@@ -48,9 +50,9 @@ import java.util.function.Supplier;
 public class AccumuloElementIngestTest extends Configured {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccumuloElementIngestTest.class);
 
-    private Graph graph;
-    private AccumuloStore accumuloStore;
-    private AccumuloElementIngestTestProperties testProperties;
+    private final Graph graph;
+    private final AccumuloStore accumuloStore;
+    private final AccumuloElementIngestTestProperties testProperties;
 
     public AccumuloElementIngestTest(final Graph graph,
                                      final AccumuloStore accumuloStore,
@@ -103,7 +105,7 @@ public class AccumuloElementIngestTest extends Configured {
         try {
             numTabletServers = accumuloStore.getConnection().instanceOperations().getTabletServers().size();
         } catch (final StoreException e) {
-            throw new OperationException("StoreException obtaining the number of tablet servers");
+            throw new OperationException("StoreException obtaining the number of tablet servers", e);
         }
         final int numSplitPoints = numTabletServers * Integer.parseInt(testProperties.getNumSplitPointsPerTabletServer());
 
@@ -139,7 +141,7 @@ public class AccumuloElementIngestTest extends Configured {
         } else {
             // Add the splits point to the table
             LOGGER.info("Adding split points to table");
-            final SplitStore splitTable = new SplitStore.Builder()
+            final SplitStoreFromFile splitTable = new SplitStoreFromFile.Builder()
                     .inputPath(splitsFile)
                     .build();
             accumuloStore.execute(splitTable, new Context());
@@ -164,10 +166,12 @@ public class AccumuloElementIngestTest extends Configured {
         accumuloStore.initialise(testProperties.getGraphId(), schema, storeProperties);
         LOGGER.info("Initialised Accumulo store (instance name is {}, graph id is {})",
                 accumuloStore.getProperties().getInstance(),
-                accumuloStore.getProperties().getTable());
+                accumuloStore.getTableName());
         LOGGER.info("Using test properties of {}", testProperties);
         final Graph graph = new Graph.Builder()
-                .graphId(testProperties.getGraphId())
+                .config(new GraphConfig.Builder()
+                        .graphId(testProperties.getGraphId())
+                        .build())
                 .store(accumuloStore)
                 .addSchema(schema)
                 .build();

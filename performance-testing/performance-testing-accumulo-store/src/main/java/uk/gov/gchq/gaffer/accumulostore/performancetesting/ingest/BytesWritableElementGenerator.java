@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.accumulostore.performancetesting.ingest;
 
 import org.apache.hadoop.io.BytesWritable;
 
-import uk.gov.gchq.gaffer.commonutil.iterable.WrappedCloseableIterable;
 import uk.gov.gchq.gaffer.data.element.Element;
 import uk.gov.gchq.gaffer.data.generator.ElementGenerator;
 import uk.gov.gchq.gaffer.exception.SerialisationException;
@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 
 public class BytesWritableElementGenerator implements ElementGenerator<BytesWritable> {
 
-    private ToBytesSerialiser<Element> elementSerialisation;
+    private final ToBytesSerialiser<Element> elementSerialisation;
 
     public BytesWritableElementGenerator(final ToBytesSerialiser<Element> elementSerialisation) {
         this.elementSerialisation = elementSerialisation;
@@ -46,6 +46,6 @@ public class BytesWritableElementGenerator implements ElementGenerator<BytesWrit
                     }
                 });
         final Iterable<Element> elementIterable = elementStream::iterator;
-        return new WrappedCloseableIterable<>(elementIterable::iterator);
+        return elementIterable::iterator;
     }
 }

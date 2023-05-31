@@ -1,0 +1,22 @@
+{% extends 'base.py.j2' %}
+
+{% block content %}
+from gafferpy.gaffer_config import GetGraph
+{%- for conf in configs %}
+
+
+class {{ config_name(conf) }}(GetGraph):
+    {%- if '{' in conf %}
+    def __init__(self, {{ snake_case(get_config_parameter(conf)) }}=""):
+    {%- else %}
+    def __init__(self):
+    {%- endif %}
+    {%- if '{' in conf %}
+        super().__init__(
+            '{{ conf }}'.format({{ get_config_parameter(conf) }}={{ snake_case(get_config_parameter(conf)) }}))
+    {%- else %}
+        super().__init__('{{ conf }}')
+    {%- endif %}
+
+{%- endfor %}
+{% endblock %}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Crown Copyright
+ * Copyright 2017-2023 Crown Copyright
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package uk.gov.gchq.gaffer.performancetesting;
 
 import uk.gov.gchq.gaffer.randomelementgeneration.Constants;
@@ -58,7 +59,7 @@ public class TestProperties extends Properties {
         if (batchSize <= 0L) {
             throw new IllegalArgumentException("The batch size must be greater than 0.");
         }
-        setProperty(BATCH_SIZE, "" + batchSize);
+        setProperty(BATCH_SIZE, String.valueOf(batchSize));
     }
 
     public double[] getRmatProbabilities() {
@@ -68,7 +69,7 @@ public class TestProperties extends Properties {
         return stringToDoubleArray(getProperty(RMAT_PROBABILITIES));
     }
 
-    public void setRmatProbabilities(final double[] rmatProbabilities) {
+    public void setRmatProbabilities(final double... rmatProbabilities) {
         if (rmatProbabilities == null || rmatProbabilities.length != 4) {
             throw new IllegalArgumentException("Probabilities should be non-null and of length 4.");
         }
@@ -96,17 +97,17 @@ public class TestProperties extends Properties {
     }
 
     public void setRmatMaxNodeId(final long maxNodeId) {
-        setProperty(RMAT_MAX_NODEID, "" + maxNodeId);
+        setProperty(RMAT_MAX_NODEID, String.valueOf(maxNodeId));
     }
 
-    private static String doubleArrayToString(final double[] values) {
+    private static String doubleArrayToString(final double... values) {
         if (null == values) {
             throw new IllegalArgumentException("Cannot convert null array to a string");
         }
         final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < values.length; i++) {
-            builder.append(values[i]);
-            builder.append(",");
+        for (final double value : values) {
+            builder.append(value);
+            builder.append(',');
         }
         return builder.substring(0, builder.length() - 1);
     }

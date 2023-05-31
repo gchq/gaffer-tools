@@ -1,6 +1,4 @@
-# README
-
-Copyright 2016 Crown Copyright
+Copyright 2022 Crown Copyright
 
 Licensed under the Apache License, Version 2.0 \(the "License"\); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -8,9 +6,21 @@ Licensed under the Apache License, Version 2.0 \(the "License"\); you may not us
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-## Gaffer Mini Accumulo Cluster
+# Gaffer Mini Accumulo Cluster
 
 This project allows you to easily spin up a mini accumulo cluster. There are two options 1. Run a Cluster with a Shell as one program \(cluster-with-shell\) 2. Run the cluster separately and open shells as required. \(cluster and shell working together\)
+
+## Building
+
+From the gaffer-tools root directory run `mvn package -Pquick -pl :mini-accumulo-cluster` to build and package the JAR, without running any tests.
+
+To run tests use `mvn verify -Pcoverage -pl :mini-accumulo-cluster`.
+
+### Using Windows
+
+If you are using Windows, you'll need to have installed the Hadoop native libraries (at least hadoop.dll - from [hadoop-common](https://github.com/apache/hadoop/tree/trunk/hadoop-common-project/hadoop-common)) and to have added the location of these libraries to your `PATH` environment variable.
+
+## Usage
 
 ### cluster-with-shell
 

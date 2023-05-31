@@ -63,3 +63,12 @@ import gafferpy.gaffer_binaryoperators as bop
 import gafferpy.gaffer_operations as op
 import gafferpy.gaffer_config as conf
 import gafferpy.gaffer_types as t
+
+########################################################
+# Backwards compatibility
+########################################################
+
+# g.And should default to pred.And rather than bop.And
+from gafferpy.gaffer_predicates import And
+# g.Or should default to pred.Or rather than bop.Or
+from gafferpy.gaffer_predicates import Or
