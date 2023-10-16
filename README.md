@@ -1,11 +1,8 @@
 # Gaffer Tools
 
-A repository for Gaffer Tools. Please refer to the README.md files in the
-subfolders for information on how to use each tool.
-- [gafferpy](python-shell/README.md)
-- [mini-accumulo-cluster](mini-accumulo-cluster/README.md)
-- [performance-testing](performance-testing/README.md)
-- [random-element-generation](random-element-generation/README.md)
+**Gaffer Tools is deprecated.**  
+Gafferpy has moved to its own repository: [gchq/gafferpy](https://github.com/gchq/gafferpy).  
+The last release of the Gaffer UI was in [gaffer-tools-1.23.0](https://github.com/gchq/gaffer-tools/tree/gaffer-tools-1.23.0).  
 
 ## License
 Copyright 2016-2023 Crown Copyright
